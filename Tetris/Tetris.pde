@@ -2,11 +2,8 @@
  * Thanks to Javidx9 for his tutorial on programming Tetris, it was of great help - https://www.youtube.com/watch?v=8OK8_tHeCIA
  
  TO DO LIST
- 
- Change the look to spheres-3 colours (black white red)
- use input from a text file to create shapes
- change grid to size of sketch
- variable sizing?
+ • Assign red to the 'noisy' shapes (check if shape deviates from list of 7)
+ • use input from a text file to create shapes
  */
 String csv[];
 String myData[][];

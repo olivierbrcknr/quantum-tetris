@@ -16,10 +16,8 @@ void drawFallingPiece()
 
   for (int y = 0; y < 4; y++)
   {
-
     for (int x = 0; x < 4; x++)
     {
-
       if (tetrominoes[currPieceType].charAt(rotate(x, y, rotationState)) == '1')
       {
         boxShape.setFill(blockColour);
@@ -40,7 +38,9 @@ void getNewPiece()
 {
   currPieceType = int(random(0, 6));
   rotationState = 0;
-  currPieceX = mapWidth / 2 - 2;
+  currPieceX = 0;
+  currPieceX = (int)map(random(mapWidth), 0, mapWidth, 0, mapWidth-4);
+  //currPieceX = mapWidth / 2 - 2;
 
   if (currPieceType == 0 || currPieceType == 5 || currPieceType == 6)
   {

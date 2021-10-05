@@ -11,7 +11,6 @@ color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the colo
 
 void createMap() //Create map border
 {
-  println(mapWidth);
   for (int y = 0; y < mapHeight; y++)
   {
     for (int x = 0; x < mapWidth; x++)

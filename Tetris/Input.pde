@@ -11,15 +11,12 @@ void checkInputs()
   // Check if key is still being held after a set delay
   if (millis() - downPressTime > downHoldDelay)
   {
-
     if (s)
     {
       dy = 1;
     }
-
     downPressTime = millis();
   }
-
   if (millis() - strafePressTime > strafeHoldDelay)
   {
 
@@ -32,14 +29,12 @@ void checkInputs()
     {
       dx = 1;
     }
-
     strafePressTime = millis();
   }
 
   // Check if we are trying to rotate the piece
   if (dr != 0)
   {
-
     int rotateTest = rotationState;
     int maxRotate = 3; // How many states of rotation are allowed for a piece type
 
