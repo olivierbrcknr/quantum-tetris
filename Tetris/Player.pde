@@ -2,45 +2,7 @@ int currPieceType = 0;
 int currPieceX = mapWidth / 2;
 int currPieceY = -1;
 int rotationState = 0;
-color currPieceColor;
 
-// Render the "ghost" piece that shows where your piece will land
-void drawGhostPiece()
-{
-  if (initialPause || gameOver) return;
-  int lastFitY = 0;
-  for (int y = 0; y < mapHeight + 2; y++)
-  {
-
-    if (checkIfPieceFits(currPieceX, currPieceY + y, rotationState))
-    {
-      lastFitY = currPieceY + y;
-    } else
-    {
-      break;
-    }
-  }
-  pushMatrix();
-  translate(resX/2 - ((tileWidth * mapWidth) / 2), 68);
-  translate(tileWidth / 2, tileHeight / 2);
-  translate(tileWidth * currPieceX, tileHeight * lastFitY);
-
-  for (int y = 0; y < 4; y++)
-  {
-    for (int x = 0; x < 4; x++)
-    {
-      if (tetrominoes[currPieceType].charAt(rotate(x, y, rotationState)) == '1')
-      {
-        boxShape.setFill(color(255, 255, 255, 150));
-        shape(boxShape);
-      }
-      translate(tileWidth, 0);
-    }
-    translate(0, tileHeight);
-    translate(-(tileWidth * 4), 0);
-  }
-  popMatrix();
-}
 
 // Draw current falling tetronimo
 void drawFallingPiece()
@@ -60,8 +22,7 @@ void drawFallingPiece()
 
       if (tetrominoes[currPieceType].charAt(rotate(x, y, rotationState)) == '1')
       {
-        //boxShape.setTexture(textures[currPieceType + 1]);
-        boxShape.setFill(currPieceColor);
+        boxShape.setFill(blockColour);
         shape(boxShape);
       }
 
@@ -89,7 +50,5 @@ void getNewPiece()
   {
     currPieceY = -4;
   }
-
-  currPieceColor = color(200, 0, 0);
   pushDownTimer = millis();
 }

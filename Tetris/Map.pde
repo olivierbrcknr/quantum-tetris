@@ -1,48 +1,39 @@
-int mapWidth = 32;
-int mapHeight = 31;
+
 int[] map = new int[mapWidth * mapHeight];
-int tileWidth = 22;
-int tileHeight = 22;
+//int numb = mapWidth*
+int fidelity = 22;
+int tileWidth = fidelity;
+int tileHeight = fidelity;
 int spacer = 3;
 
 color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
-boolean changeTargetNextFrame = false;
-boolean waitedSomeFrames = false;
-int bgChangeFrameCounter = 0;
 
 
-
-// DISCLAIMER: the rendering code is horribly inefficient, enter at your own risk
-
-void createMap()
+void createMap() //Create map border
 {
-
-  //Create map border
+  println(mapWidth);
   for (int y = 0; y < mapHeight; y++)
   {
-
     for (int x = 0; x < mapWidth; x++)
     {
-
       if (x == 0 || x == mapWidth - 1 || y == mapHeight - 1)
       {
         map[y * mapWidth + x] = 1;
         continue;
       }
-
       map[y * mapWidth + x] = 0;
     }
   }
 
-  //Set tile colors
-  for (int y = 0; y < mapHeight; y++)
-  {
+  ////Set tile colors (commenting out for now-will delete later)
+  //for (int y = 0; y < mapHeight; y++)
+  //{
 
-    for (int x = 0; x < mapWidth; x++)
-    {
-      tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
-    }
-  }
+  //  for (int x = 0; x < mapWidth; x++)
+  //  {
+  //    tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
+  //  }
+  //}
 }
 
 void drawForeground()
@@ -50,33 +41,29 @@ void drawForeground()
   pushMatrix();
   translate(resX/2 - ((tileWidth * mapWidth) / 2), 68);
   translate(tileWidth/2, tileHeight/2);
-
   for (int y = 0; y < mapHeight; y++)
   {
     for (int x = 0; x < mapWidth; x++)
     {
       if (map[y * mapWidth + x] == 0)
       {
-        mapFillerShape.setStroke(color(0, 0, 0, 255));
-        mapFillerShape.setFill(color(100, 100, 100, 100));
+        mapFillerShape.setStroke(false);
+        mapFillerShape.setFill(gridColor);
         shape(mapFillerShape);
       } else
       {
         push();
         if (map[y * mapWidth + x] == 1)
         {
-          //boxShape.setFill(false);
+          boxShape.setFill(bg);
         } else
         {
           boxShape.setFill(tileColors[y * mapWidth + x]);
         }
-
         if (blocksToRemove.size() > 0)
         {
-
           for (int j = 0; j < blocksToRemove.size(); j++)
           {
-
             if ((y * mapWidth + x) == blocksToRemove.get(j))
             {
               color curTileColor = tileColors[y * mapWidth + x];

@@ -1,4 +1,3 @@
-import processing.serial.*;
 /*
  * Thanks to Javidx9 for his tutorial on programming Tetris, it was of great help - https://www.youtube.com/watch?v=8OK8_tHeCIA
  
@@ -6,15 +5,13 @@ import processing.serial.*;
  
  Change the look to spheres-3 colours (black white red)
  use input from a text file to create shapes
- make it work with controllers
  change grid to size of sketch
  variable sizing?
  */
 String csv[];
 String myData[][];
-Serial myPort;
 String[] tetrominoes = new String[7];
-int resX = 800;
+int resX = 900;
 int resY = 800;
 int score = 0;
 int secondsSinceStart = 0; // Seconds since pressing spacebar
@@ -23,6 +20,12 @@ float pushDownTimer = 0;
 float pushDownDelay = 1000; // Time between automatic pushdown of the falling piece
 boolean gameOver = false;
 boolean initialPause = true;
+int mapWidth = resX/25;
+int mapHeight = resY/25;
+int bToRemove = mapWidth-2; 
+color bg = color(20); //Background colour
+color blockColour = color(255); //Colour of tetris block
+color gridColor = color(40);
 
 // PShape objects are used to render each different thing on screen
 PShape boxShape;
@@ -41,20 +44,12 @@ float blockDissolveTimer = 0;
 
 void settings()
 {
-  size(resX, resY);
+  size(resX, resY); // to be set to FX2D for super sharpness but breaks controls
 }
 
 void setup()
 {
-  //csv = loadStrings("sources.csv");
-  //myData = new String[csv.length][6];
-  //for(int i=0; i<csv.length; i++)
-  //{
-  //  myData[i] = csv[i].split(",");
-  //}
-  //println(myData[23][4]);
-  printArray(Serial.list());
-  // Define the shape of the tetrominoes
+  
   // Each X marks a tile of the shape
   tetrominoes[0] =  "--1-"; // First assignment needs to be "=" to replace the initial null value
   tetrominoes[0] += "--1-";
@@ -90,8 +85,6 @@ void setup()
   tetrominoes[6] += "-11-";
   tetrominoes[6] += "-1--";
   tetrominoes[6] += "-1--";
-
-  frameRate(60);
   shapeMode(CORNER);
 
   boxShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
@@ -112,22 +105,10 @@ void setup()
 
 void draw()
 {
-  background(200);
-
-   //while (myPort.available() > 0) {
-   //int inByte = myPort.read();
-   //println(inByte);
-   //}
-   
-
+  background(bg);
   update();
-
   drawForeground();
-
-  drawGhostPiece();
-
   drawFallingPiece();
-
   drawInterface();
 
   if (initialPause) drawPauseScreen();
@@ -138,20 +119,15 @@ void draw()
 // Main gameplay logic loop - push the current piece down, check inputs and remove full rows if they exist
 void update()
 {
-  //println(frameRate);
-
   if (!gameOver)
   {
-
     if (!initialPause)
     {
-
       if (millis() - secondCounter >= 1000)
       {
         secondsSinceStart++;
         secondCounter = millis();
       }
-
       // Remove rows of blocks if there are any to be removed
       if (blocksToRemove.size() > 0)
       {
@@ -181,22 +157,18 @@ void update()
 }
 
 // Checks for 10 blocks on each row
-void checkForRows()
+void checkForRows() //set number to 30 for now-will need to change eventually
 {
 
   for (int y = 0; y < mapHeight - 1; y++)
   {
     int piecesInRow = 0;
-
     for (int x = 1; x < mapWidth - 1; x++)
     {
-
       if (map[y * mapWidth + x] != 0) piecesInRow++;
     }
-
-    if (piecesInRow == 10)
+    if (piecesInRow == bToRemove)
     {
-
       for (int i = 1; i < mapWidth - 1; i++)
       {
         blocksToRemove.add(y * mapWidth + i);
@@ -248,7 +220,7 @@ void dissolveBlocks()
 
         if (doDisplace)
         {
-          map[(y + numRowsToDisplace) * mapWidth + x] = map[y * mapWidth + x];
+          map[(y + numRowsToDisplace) * mapWidth + x] = map[y * mapWidth + x]; //ERROR
           tileColors[(y + numRowsToDisplace) * mapWidth + x] = tileColors[y * mapWidth + x];
         }
 
@@ -264,12 +236,9 @@ void dissolveBlocks()
 // Locks the current piece as part of the map and checks the game over condition
 void lockCurrPieceToMap()
 {
-
   int blocksThatFit = 0;
-
   for (int y = 0; y < 4; y++)
   {
-
     for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotate(x, y, rotationState);
@@ -281,7 +250,7 @@ void lockCurrPieceToMap()
         if (mapIndex >= 0)
         {
           map[mapIndex] = currPieceType + 2;
-          tileColors[mapIndex] = currPieceColor;
+          tileColors[mapIndex] = blockColour;
           blocksThatFit++;
         }
       }
@@ -321,7 +290,6 @@ boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
           return false;
         }
       }
-
       if (movingToX + x >= 0 && movingToX + x < mapWidth)
       {
 
@@ -336,7 +304,6 @@ boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
       }
     }
   }
-
   return true;
 }
 
@@ -344,10 +311,8 @@ boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
 void placePieceDownInstantly()
 {
   int lastFitY = 0;
-
   for (int y = 0; y < mapHeight + 2; y++)
   {
-
     if (checkIfPieceFits(currPieceX, currPieceY + y, rotationState))
     {
       lastFitY = currPieceY + y;
@@ -363,7 +328,6 @@ void placePieceDownInstantly()
 // Changes speed of automatic pushdown according to time elapsed, somewhat in tune with the music
 void updateGameSpeed()
 {
-
   if (secondsSinceStart >= 248)
   {
     pushDownDelay = 70;
@@ -382,7 +346,6 @@ void updateGameSpeed()
 // Thanks to Javidx9 for this algorithm - https://www.youtube.com/watch?v=8OK8_tHeCIA
 int rotate(int rx, int ry, int rState)
 {
-
   switch(rState)
   {
   case 0:
@@ -394,7 +357,6 @@ int rotate(int rx, int ry, int rState)
   case 3:
     return 3 - ry + (rx * 4);
   }
-
   return 0;
 }
 
