@@ -128,26 +128,25 @@ void checkInputs()
 void keyPressed()
 {
 
-  if (key == 'w')
+  if (keyCode == 87)
   {
     w = true;
   }
-
-  if (key == 'a')
+  if (keyCode == 65)
   {
     dx = -1;
     a = true;
     strafePressTime = millis();
   }
 
-  if (key == 's')
+  if (keyCode == 83)
   {
     dy = 1;
     s = true;
     downPressTime = millis();
   }
 
-  if (key == 'd')
+  if (keyCode == 68)
   {
     dx = 1;
     d = true;
@@ -172,7 +171,7 @@ void keyPressed()
     dr = 1;
   }
 
-  if (keyCode == ESC)
+  if (keyCode == 27)
   {
     esc = (esc) ? false : true;
   }
@@ -197,23 +196,21 @@ void keyPressed()
 
 void keyReleased()
 {
-
-  if (key == 'w')
+  if (keyCode == 87)
   {
     w = false;
   }
-
-  if (key == 'a')
+  if (keyCode == 65)
   {
     a = false;
   }
 
-  if (key == 's')
+  if (keyCode == 83)
   {
     s = false;
   }
 
-  if (key == 'd')
+  if (keyCode == 68)
   {
     d = false;
   }

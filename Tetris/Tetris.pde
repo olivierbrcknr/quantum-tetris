@@ -41,7 +41,7 @@ float blockDissolveTimer = 0;
 
 void settings()
 {
-  size(resX, resY); // to be set to FX2D for super sharpness but breaks controls
+  size(resX, resY, FX2D); 
 }
 
 void setup()
@@ -153,8 +153,7 @@ void update()
   }
 }
 
-// Checks for 10 blocks on each row
-void checkForRows() //set number to 30 for now-will need to change eventually
+void checkForRows() 
 {
 
   for (int y = 0; y < mapHeight - 1; y++)
