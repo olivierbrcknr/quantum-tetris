@@ -14,9 +14,9 @@ void drawFallingPiece()
   translate(tileWidth / 2, tileHeight / 2);
   translate(tileWidth * currPieceX, tileHeight * currPieceY);
 
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       if (tetrominoes[currPieceType][colChecker].charAt(rotatef(x, y, rotationState)) == '1')
       {
@@ -56,15 +56,7 @@ void getNewPiece()
   currPieceX = 0;
   currPieceX = (int)map(random(mapWidth), 0, mapWidth, 0, mapWidth-4); //random horizontal distribution
   //currPieceX = mapWidth / 2 - 2;
-
-  if (currPieceType == 0 || currPieceType == 5 || currPieceType == 6)
-  {
-    // Makes it a little bit more fair for long pieces that would usually spawn in contact with the top of the playfield
-    currPieceY = -5;
-  } else
-  {
-    currPieceY = -4;
-  }
+  currPieceY = -5;
   pushDownTimer = millis();
 }
 
