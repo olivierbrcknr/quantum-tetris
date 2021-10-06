@@ -12,7 +12,7 @@ int colNumber = 7; //put number of columns in source .csv file here
 String tetrominoes[][];
 String myData[][];
 //String[] tetrominoes = new String[7];
-int resX = 900;
+int resX = 800;
 int resY = 800;
 int score = 0;
 int secondsSinceStart = 0; // Seconds since pressing spacebar
@@ -23,7 +23,7 @@ boolean gameOver = false;
 boolean initialPause = true;
 int mapWidth = resX/25;
 int mapHeight = resY/25;
-int bToRemove = mapWidth-2;
+int bToRemove = mapWidth-2; //should be 34
 color bg = color(20); //Background colour
 color blockColour = color(255); //Colour of tetris block
 color noiseBlockColour = color(255, 0, 0); //Colour of 'noisy' tetris block
@@ -70,21 +70,15 @@ void setup()
   }
 
   for (int i=0; i<7; i++)
-  {
+  //{ 
     //println(tetrominoes[i][0]);
-  }
+  //}
   shapeMode(CORNER);
-
   boxShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
-
   mapFillerShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
-
   pauseTextBgShape = createShape(RECT, 0, 0, 200, 200);
-
   boxShape.setStroke(false);
-
   mapFillerShape.setStroke(false);
-
   pauseTextBgShape.setFill(color(0, 0, 0));
   pauseTextBgShape.setStroke(color(255, 255, 255));
   createMap();
@@ -123,9 +117,7 @@ void update()
         pushDownTimer = millis();
         return; // Pause until blocks have been removed
       }
-
       checkInputs();
-
       // If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
       // pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
       if (millis() - pushDownTimer > pushDownDelay)
@@ -146,7 +138,6 @@ void update()
 
 void checkForRows()
 {
-
   for (int y = 0; y < mapHeight - 1; y++)
   {
     int piecesInRow = 0;
@@ -166,7 +157,6 @@ void checkForRows()
 }
 
 // Removes rows of blocks and moves all the tiles above down N amount of steps
-// The basic logic:
 // 1. Find the height for each row we need to remove
 // 2. Start by removing the lowest row we need to remove
 // 3. Displace all blocks above the rows we remove
@@ -178,14 +168,11 @@ void dissolveBlocks()
   if (millis() - blockDissolveTimer > dissolveTime)
   {
     int startHeight = (blocksToRemove.get(blocksToRemove.size() - 1) + 1) / mapWidth;
-
     ArrayList<Integer> rowsToRemoveHeights = new ArrayList<Integer>();
-
-    for (int i = 0; i < blocksToRemove.size() / 10; i++)
+    for (int i = 0; i < blocksToRemove.size() / bToRemove; i++)
     {
-      rowsToRemoveHeights.add((blocksToRemove.get(10 * i) + 1) / mapWidth);
+      rowsToRemoveHeights.add((blocksToRemove.get(bToRemove * i) + 1) / mapWidth);
     }
-
     int numRowsToDisplace = 0;
     for (int y = startHeight; y >= 0; y--)
     {
@@ -209,7 +196,6 @@ void dissolveBlocks()
         tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
       }
     }
-
     blocksToRemove.clear();
   }
 }
@@ -218,9 +204,9 @@ void dissolveBlocks()
 void lockCurrPieceToMap()
 {
   int blocksThatFit = 0;
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotatef(x, y, rotationState);
       if (tetrominoes[currPieceType][colChecker].charAt(pieceIndex) == '1')
@@ -255,9 +241,9 @@ void lockCurrPieceToMap()
 // Check if the piece fits in the position it's trying to move into
 boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
 {
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotatef(x, y, rotation);
       int mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
@@ -325,7 +311,7 @@ int rotatef(int rx, int ry, int rState)
   switch(rState)
   {
   case 0:
-    return ry * 4 + rx; //change to 2
+    return ry * 4 + rx;
   case 1:
     return 12 + ry - (rx * 4);
   case 2:
