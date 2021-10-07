@@ -14,16 +14,16 @@ int spacer = 3; // space between the blocks
 /* 
 Uncomment the following the lines to enable controller
 Comment these lines if no controller is attached
-
+*/
 void setup() {
-    control = ControlIO.getInstance(this);
-    device = control.getMatchedDevice("NES_Suily_Controller");
+    // control = ControlIO.getInstance(this);
+    // device = control.getMatchedDevice("NES_Suily_Controller");
 }
 
 void draw() {
-    getUserInput();
+    // getUserInput();
 }
-*/
+
 
 ...
 ```
