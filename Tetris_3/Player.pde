@@ -12,9 +12,9 @@ void drawFallingPiece()
   translate(tileWidth / 2, tileHeight / 2);
   translate(tileWidth * currPieceX, tileHeight * currPieceY);
 
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       if (tetrominoes[currPieceType][colChecker].charAt(rotatef(x, y, rotationState)) == '1')
       {

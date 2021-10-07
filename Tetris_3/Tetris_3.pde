@@ -1,76 +1,64 @@
+//Import Libraries
 import net.java.games.input.*;
 import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
-
 import processing.javafx.*;
 
-/*
- * Thanks to Javidx9 for his tutorial on programming Tetris, it was of great help - https://www.youtube.com/watch?v=8OK8_tHeCIA
- * Thanks to MUO for his tutorial on configuring the controller, it was of great help - https://www.youtube.com/watch?v=MUM8_4mWxng&t=175s
- TO DO LIST
- • improve UI (redo game over screen)
- • redo colChecker and rowChecker algos
- • addfx2d and controller libraries
- • remove objects appearing outside grid
- */
+//Sizing setup
+int resX = 800;
+int resY = 800;
+int mapWidth = resX/25;
+int mapHeight = resY/25;
+int bToRemove = mapWidth-2;
 
 // controller variables
 ControlIO control;
 ControlDevice device;
 ControlButton button;
-
-String csv[];
-int rowChecker = 0;
-int colChecker = 0; //tracks current column/run of game
-int colNumber = 7; //put number of columns in source .csv file here
-String tetrominoes[][];
-String myData[][];
-int resX = 300;
-int resY = 800;
-int score = 0;
-int secondsSinceStart = 0; // Seconds since pressing spacebar
-float secondCounter = 0;
-float pushDownTimer = 0;
-float pushDownDelay = 1000; // Time between automatic pushdown of the falling piece
-// controller floats
 float DLR; //D-pad L/R
 float DUD; //D-pad U/D
 float A; // A button
 float B; // B button
 float Start; // Start button
 float Select; // Select button
-//WK = keyCode == 87;
-//SK = keyCode == 83;
+float initialVal1 = 0.0;
+float initialVal2 = 0.0;
+float timerVal1 = 0.0;
+float timerVal2 = 0.0;
+
+
+//Data Variables
+String csv[];
+int rowChecker = 0;
+int colChecker = 0; //tracks current column/run of game
+int colNumber = 7; //put number of columns in source .csv file here
+String tetrominoes[][];
+String myData[][];
+
+int secondsSinceStart = 0; // Seconds since pressing spacebar
+float secondCounter = 0;
+float pushDownTimer = 0;
+float pushDownDelay = 800; // Time between automatic pushdown of the falling piece
 boolean gameOver = false;
-boolean initialPause = false;
-int mapWidth = resX/25;
-int mapHeight = resY/25;
-int bToRemove = mapWidth-2;
+boolean gameRes = false;
+
+//Colours
 color bg = color(20); //Background colour
 color blockColour = color(255); //Colour of tetris block
 color noiseBlockColour = color(255, 0, 0); //Colour of 'noisy' tetris block
-color gridColor = color(40);  
+color gridColor = color(40);
 
 // PShape objects are used to render each different thing on screen
 PShape boxShape;
 PShape fillShape;
 PShape mapFillerShape;
-PShape pauseTextBgShape;
-
-boolean rightKey = false;
-boolean leftKey = false;
-boolean AKey = false;
-boolean BKey = false;
-
 ArrayList<Integer> blocksToRemove = new ArrayList<Integer>();
 float blockDissolveTimer = 0;
 
-int YVal = 4;
-int XVal = 4;
 
-float initialVal = 0.0;
-float timerVal1 = 0.0;
-float timerVal2 = 0.0;
+//Temporary Working Variables
+
+float tempVal = 0;
 void settings()
 {
   size(resX, resY, P2D);
@@ -79,8 +67,8 @@ void settings()
 void setup()
 {
   // Controller set up
-  //control = ControlIO.getInstance(this);
-  //device = control.getMatchedDevice("NES_Suily_Controller");
+  control = ControlIO.getInstance(this);
+  device = control.getMatchedDevice("NES_Suily_Controller");
 
   csv = loadStrings("sources.csv");
   tetrominoes = new String[csv.length][colNumber];
@@ -104,80 +92,38 @@ void setup()
   shapeMode(CORNER);
   boxShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
   mapFillerShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
-  pauseTextBgShape = createShape(RECT, 0, 0, 200, 200);
   boxShape.setStroke(false);
   mapFillerShape.setStroke(false);
-  pauseTextBgShape.setFill(color(0, 0, 0));
-  pauseTextBgShape.setStroke(color(255, 255, 255));
   createMap();
   getNewPiece();
-}
-
-public void getUserInput() {
-  // assign float value
-  //access the controler
-  DLR = map(device.getSlider("D-pad L/R").getValue(), -1, 1, 65, 83);
-  DUD = map(device.getSlider("D-pad U/D").getValue(), -1, 1, 87, 68);
-  A = device.getButton("A").getValue();
-  B = device.getButton("B").getValue();
-  Start = device.getButton("Start").getValue();
-  Start = device.getButton("Select").getValue();
-
-  //if it detects input, use a counter to detect (1) use
-  if ((A==8.0) && (initialVal==0.0)) {
-    dr = -1;
-    timerVal1 = millis();
-    initialVal++;
-  }
-  if ((B==8.0) && (initialVal==0.0)) {
-    dr = 1;
-    timerVal1 = millis();
-    initialVal++;
-  }
-  if ((Start==8.0) && (initialVal==0.0)) {
-    if (initialPause)
-    {
-      initialPause = false;
-      secondCounter = millis();
-    } else if (gameOver)
-    {
-      resetGameState();
-    } else
-    {
-      placePieceDownInstantly();
-    }
-    timerVal1 = millis();
-    initialVal++;
-  }
-
-  if ((A==0.0)||(Start==8.0)) {
-    timerVal2 = millis();
-  }
-
-  if (timerVal2-timerVal1 > 200) {
-    initialVal=0.0;
-    timerVal1=0.0;
-    timerVal2=0.0;
-  }
-  println(initialVal);
-  
-  //checkforchangeinvalue
 }
 
 void draw()
 {
   background(bg);
+  getUserInput();
   update();
   drawForeground();
   drawFallingPiece();
-  //getUserInput();
 
-  //if (initialPause) drawPauseScreen();
-  if (gameOver) drawGameOverScreen();
-  
+  if (gameOver || gameRes) {
+    gameRestart();
+  }
+
   noStroke();
   fill(bg);
   rect(-1, -1, width+1, 68);
+}
+
+void gameRestart() {
+  tempVal++;
+  drawGameOverScreen();
+
+  if (tempVal==60) {
+    resetGameState();
+    tempVal = 0;
+    gameRes = false;
+  }
 }
 
 // Main gameplay logic loop - push the current piece down, check inputs and remove full rows if they exist
@@ -185,35 +131,32 @@ void update()
 {
   if (!gameOver)
   {
-    if (!initialPause)
+    if (millis() - secondCounter >= 1000)
     {
-      if (millis() - secondCounter >= 1000)
-      {
-        secondsSinceStart++;
-        secondCounter = millis();
-      }
-      // Remove rows of blocks if there are any to be removed
-      if (blocksToRemove.size() > 0)
-      {
-        dissolveBlocks();
-        pushDownTimer = millis();
-        return; // Pause until blocks have been removed
-      }
-      checkInputs();
+      secondsSinceStart++;
+      secondCounter = millis();
+    }
+    // Remove rows of blocks if there are any to be removed
+    if (blocksToRemove.size() > 0)
+    {
+      dissolveBlocks();
+      pushDownTimer = millis();
+      return; // Pause until blocks have been removed
+    }
+    checkInputs();
 
-      // If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
-      // pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
-      if (millis() - pushDownTimer > pushDownDelay)
+    // If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
+    // pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
+    if (millis() - pushDownTimer > pushDownDelay)
+    {
+      if (checkIfPieceFits(currPieceX, currPieceY + 1, rotationState))
       {
-        if (checkIfPieceFits(currPieceX, currPieceY + 1, rotationState))
-        {
-          currPieceY++;
-        } else
-        {
-          lockCurrPieceToMap();
-        }
-        pushDownTimer = millis();
+        currPieceY++;
+      } else
+      {
+        lockCurrPieceToMap();
       }
+      pushDownTimer = millis();
     }
   }
 }
@@ -238,26 +181,17 @@ void checkForRows()
   }
 }
 
-// Removes rows of blocks and moves all the tiles above down N amount of steps
-// The basic logic:
-// 1. Find the height for each row we need to remove
-// 2. Start by removing the lowest row we need to remove
-// 3. Displace all blocks above the rows we remove
-// 4. How much we displace the blocks needs to be increased by 1 for each removed row below it
 void dissolveBlocks()
 {
   int dissolveTime = 200;
   if (millis() - blockDissolveTimer > dissolveTime)
   {
     int startHeight = (blocksToRemove.get(blocksToRemove.size() - 1) + 1) / mapWidth;
-
     ArrayList<Integer> rowsToRemoveHeights = new ArrayList<Integer>();
-
     for (int i = 0; i < blocksToRemove.size() / bToRemove; i++)
     {
       rowsToRemoveHeights.add((blocksToRemove.get(bToRemove * i) + 1) / mapWidth);
     }
-
     int numRowsToDisplace = 0;
     for (int y = startHeight; y >= 0; y--)
     {
@@ -290,9 +224,9 @@ void dissolveBlocks()
 void lockCurrPieceToMap()
 {
   int blocksThatFit = 0;
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotatef(x, y, rotationState);
       if (tetrominoes[currPieceType][colChecker].charAt(pieceIndex) == '1')
@@ -327,9 +261,9 @@ void lockCurrPieceToMap()
 // Check if the piece fits in the position it's trying to move into
 boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
 {
-  for (int y = 0; y < YVal; y++)
+  for (int y = 0; y < 4; y++)
   {
-    for (int x = 0; x < XVal; x++)
+    for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotatef(x, y, rotation);
       int mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
@@ -413,7 +347,6 @@ void resetGameState()
   createMap();
   getNewPiece();
   gameOver = false;
-  initialPause = true;
   secondsSinceStart = 0;
   secondCounter = millis();
   pushDownDelay = 1000;

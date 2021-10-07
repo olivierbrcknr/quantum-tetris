@@ -8,6 +8,61 @@ float strafePressTime = -1;
 int dx = 0, dy = 0; //Delta x, delta y
 int dr = 0; // Delta rotate
 
+public void getUserInput() {
+  DLR = device.getSlider("D-pad L/R").getValue();
+  DUD = device.getSlider("D-pad U/D").getValue();
+  A = device.getButton("A").getValue();
+  B = device.getButton("B").getValue();
+  Start = device.getButton("Start").getValue();
+  Select = device.getButton("Select").getValue();
+
+  if ((A==8) && (initialVal1 == 0)) {
+    dr = -1;
+    timerVal1 = millis();
+    initialVal1++;
+  }
+
+  if ((B==8) && (initialVal1==0)) {
+    dr = 1;
+    timerVal1 = millis();
+    initialVal1++;
+  }
+
+  if ((Start==8) && (initialVal2==0)) {
+    gameRes = true;
+    timerVal2 = millis();
+    initialVal2++;
+  }
+  
+  if ((Select==8) && (initialVal2==0)) {
+    placePieceDownInstantly();
+    timerVal2 = millis();
+    initialVal2++;
+  }
+
+  if ((DUD>0.5) && (initialVal1==0)) {
+    dy = 1;
+    timerVal1 = millis();
+    initialVal1++;
+  }
+  if ((DLR>0.5) && (initialVal1==0)) {
+    dx = 1;
+    timerVal1 = millis();
+    initialVal1++;
+  }
+  if ((DLR<-0.5) && (initialVal1==0)) {
+    dx = -1;
+    timerVal1 = millis();
+    initialVal1++;
+  }
+
+  if (millis()>timerVal1+150) {
+    initialVal1=0;
+  }
+  if (millis()>timerVal2+350) {
+    initialVal2=0;
+  }
+}
 void checkInputs()
 {
   // Check if key is still being held after a set delay
@@ -155,7 +210,7 @@ void keyPressed()
     strafePressTime = millis();
   }
 
- 
+
   if (keyCode == LEFT)
   {
     dr = -1;
@@ -173,18 +228,11 @@ void keyPressed()
 
   if (keyCode == 32) // Spacebar
   {
-    if (initialPause)
-    {
-
-      initialPause = false;
-      secondCounter = millis();
-    } else if (gameOver)
-    {
-      resetGameState();
-    } else
-    {
-      placePieceDownInstantly();
-    }
+    placePieceDownInstantly();
+  }
+  if (keyCode == 81) // Spacebar
+  {
+    gameRes = true;
   }
 }
 

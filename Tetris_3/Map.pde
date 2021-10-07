@@ -76,7 +76,6 @@ void drawForeground()
         shape(boxShape);
         pop();
       }
-
       translate(tileWidth, 0);
     }
     translate(0, tileHeight);
@@ -85,55 +84,28 @@ void drawForeground()
   popMatrix();
 }
 
-// This controls the gradual change to another color for the background
-// The background will slowly shift to a specific target color while the game plays
-
-
-void drawPauseScreen()
-{
-  //pushMatrix();
-  //translate(resX/2 - ((tileWidth) / 2), resY / 2 - (tileHeight * 3));
-  //translate(tileWidth/2, tileHeight/2);
-  //shape(pauseTextBgShape);
-  //text("Press space to start", 0, 0, 51);
-  //popMatrix();
-}
-
 void drawGameOverScreen()
 {
-  //pushMatrix();
-  //translate(resX/2 - ((tileWidth * mapWidth) / 2), 68);
-  //translate(tileWidth/2, tileHeight/2);
-  //for (int y = 0; y < mapHeight; y++)
-  //{
-  //  for (int x = 0; x < mapWidth; x++)
-  //  {
-  //    println("end screen");
-  //    //fill(255,0, 0);
-  //    //rect(-1, -1, width, height);
-      mapFillerShape.setFill(color(255, 0, 0));
-                boxShape.setFill(color(255, 0, 0));
-      shape(mapFillerShape);
-      shape(boxShape);
-  //  }
-  //  translate(0, tileHeight);
-  //  translate(-(tileWidth * mapWidth), 0);
-  //}
-  //popMatrix();
+  pushMatrix();
+  translate(resX/2 - ((tileWidth * mapWidth) / 2), 68);
+  translate(tileWidth/2, tileHeight/2);
+  for (int y = 0; y < mapHeight; y++)
+  {
+    for (int x = 0; x < mapWidth; x++)
+    {
+      if (map[y * mapWidth + x] == 0)
+      {
+        //if (tempVal%10==0) {
+          mapFillerShape.setFill(blockColour);
+        //} else {
+          //mapFillerShape.setFill(gridColor);
+        //}
+        shape(mapFillerShape);
+      }
+      translate(tileWidth, 0);
+    }
+    translate(0, tileHeight);
+    translate(-(tileWidth * mapWidth), 0);
+  }
+  popMatrix();
 }
-//pushMatrix();
-//translate(resX/2 - ((tileWidth) / 2), resY / 2 - (tileHeight * 3));
-//translate(tileWidth/2, tileHeight/2);
-
-
-
-////shape(pauseTextBgShape);
-////push();
-////fill(200, 0, 0);
-////textSize(30);
-////text("GAME OVER!", 0, -10, 51);
-////fill(255, 255, 255);
-////textSize(15);
-////text("Press space to continue", -2, 30, 51);
-////pop();
-//popMatrix();
