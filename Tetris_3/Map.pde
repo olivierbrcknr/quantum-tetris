@@ -1,13 +1,17 @@
-
-int[] map = new int[mapWidth * mapHeight];
-int fidelity = 22;
-int tileWidth = fidelity;
-int tileHeight = fidelity;
-int spacer = 3;
-
-color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
+void generateBlocks(String reg[], String noise[]) {
+  int dial = 0;
 
 
+  for (int i=0; i<numberOfBlocks; i++) {
+    float random = random(numberOfBlocks);
+    if (random<dial) {
+      tetrominoes = append(tetrominoes, noise[i]);
+    } else {
+      tetrominoes = append(tetrominoes, reg[i]);
+    }
+    dial++;
+  }
+}
 void createMap() //Create map border
 {
   for (int y = 0; y < mapHeight; y++)
@@ -22,16 +26,6 @@ void createMap() //Create map border
       map[y * mapWidth + x] = 0;
     }
   }
-
-  ////Set tile colors (commenting out for now-will delete later)
-  //for (int y = 0; y < mapHeight; y++)
-  //{
-
-  //  for (int x = 0; x < mapWidth; x++)
-  //  {
-  //    tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
-  //  }
-  //}
 }
 
 void drawForeground()
@@ -96,9 +90,9 @@ void drawGameOverScreen()
       if (map[y * mapWidth + x] == 0)
       {
         //if (tempVal%10==0) {
-          mapFillerShape.setFill(blockColour);
+        mapFillerShape.setFill(blockColour);
         //} else {
-          //mapFillerShape.setFill(gridColor);
+        //mapFillerShape.setFill(gridColor);
         //}
         shape(mapFillerShape);
       }

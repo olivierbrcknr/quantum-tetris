@@ -29,7 +29,7 @@ public void getUserInput() {
   }
 
   if ((Start==8) && (initialVal2==0)) {
-    gameRes = true;
+    gameOver = true;
     timerVal2 = millis();
     initialVal2++;
   }
@@ -232,7 +232,7 @@ void keyPressed()
   }
   if (keyCode == 81) // Spacebar
   {
-    gameRes = true;
+    gameOver = true;
   }
 }
 

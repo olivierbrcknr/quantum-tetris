@@ -10,6 +10,13 @@ int resY = 800;
 int mapWidth = resX/25;
 int mapHeight = resY/25;
 int bToRemove = mapWidth-2;
+int[] map = new int[mapWidth * mapHeight];
+int fidelity = 22;
+int tileWidth = fidelity;
+int tileHeight = fidelity;
+int spacer = 3;
+color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
+int numberOfBlocks = 100;
 
 // controller variables
 ControlIO control;
@@ -62,7 +69,7 @@ float blockDissolveTimer = 0;
 float tempVal = 0;
 void settings()
 {
-  size(resX, resY, P2D);
+  size(resX, resY, FX2D);
 }
 
 void setup()
@@ -70,7 +77,6 @@ void setup()
   // Controller set up
   //control = ControlIO.getInstance(this);
   //device = control.getMatchedDevice("NES_Suily_Controller");
-
 
   // Load Data
   csv = loadStrings("TETRIS_blocks.csv");
