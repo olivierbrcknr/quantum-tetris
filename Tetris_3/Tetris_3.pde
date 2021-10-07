@@ -31,16 +31,19 @@ float timerVal2 = 0.0;
 String csv[];
 int rowChecker = 0;
 int colChecker = 0; //tracks current column/run of game
-int colNumber = 7; //put number of columns in source .csv file here
-String tetrominoes[][];
+int colNumber = 1; //put number of columns in source .csv file here
+String tetrominoes[];
 String myData[][];
+String regBlocks[];
+int regBlocksCount = 0;
+String noiseBlocks[];
+int noiseBlocksCount = 0;
 
 int secondsSinceStart = 0; // Seconds since pressing spacebar
 float secondCounter = 0;
 float pushDownTimer = 0;
 float pushDownDelay = 800; // Time between automatic pushdown of the falling piece
 boolean gameOver = false;
-boolean gameRes = false;
 
 //Colours
 color bg = color(20); //Background colour
@@ -56,8 +59,6 @@ ArrayList<Integer> blocksToRemove = new ArrayList<Integer>();
 float blockDissolveTimer = 0;
 
 
-//Temporary Working Variables
-
 float tempVal = 0;
 void settings()
 {
@@ -67,28 +68,41 @@ void settings()
 void setup()
 {
   // Controller set up
-  control = ControlIO.getInstance(this);
-  device = control.getMatchedDevice("NES_Suily_Controller");
+  //control = ControlIO.getInstance(this);
+  //device = control.getMatchedDevice("NES_Suily_Controller");
 
-  csv = loadStrings("sources.csv");
-  tetrominoes = new String[csv.length][colNumber];
-  myData = new String[csv.length][colNumber];
 
-  for (int j=0; j<colNumber-1; j++) {
-    for (int i=0; i<myData.length; i++)
-    {
-      myData[i] = csv[i].split(",");    // assigning all the shapes from qc to string
-      String sub1 = myData[i][j].substring(0, 2);
-      String sub2 = myData[i][j].substring(2, 4);
-      String sub3 = myData[i][j].substring(4, 6);
-      String sub4 = myData[i][j].substring(6, 8);
-      String one = "0";
-      String two = "00";
-      String[] StringsToJoin = {one, sub1, two, sub2, two, sub3, two, sub4, one};
-      String sixteenBit = join(StringsToJoin, "");
-      tetrominoes[i][j] = sixteenBit;
+  // Load Data
+  csv = loadStrings("TETRIS_blocks.csv");
+  myData = new String[csv.length][1];
+  regBlocks = new String[0];
+  noiseBlocks = new String[0];
+  tetrominoes = new String[0];
+
+  for (int i=0; i<myData.length; i++) {
+    myData[i] = csv[i].split(",");
+  }
+
+  for (int i=0; i<myData.length; i++) {
+    String sub1 = myData[i][0].substring(0, 2);
+    String sub2 = myData[i][0].substring(2, 4);
+    String sub3 = myData[i][0].substring(4, 6);
+    String sub4 = myData[i][0].substring(6, 8);
+    String one = "0";
+    String two = "00";
+    String[] StringsToJoin = {one, sub1, two, sub2, two, sub3, two, sub4, one};
+    String sixteenBit = join(StringsToJoin, "");
+    myData[i][0]=sixteenBit;
+
+    if (noiseChecker(myData[i][0])) {
+      regBlocks = append(regBlocks, myData[i][0]);
+    } else {
+      noiseBlocks = append(noiseBlocks, myData[i][0]);
     }
   }
+
+  generateBlocks(regBlocks, noiseBlocks);
+
   shapeMode(CORNER);
   boxShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
   mapFillerShape = createShape(ELLIPSE, 0, 0, tileWidth-spacer, tileHeight-spacer);
@@ -101,12 +115,12 @@ void setup()
 void draw()
 {
   background(bg);
-  getUserInput();
+  //getUserInput();
   update();
   drawForeground();
   drawFallingPiece();
 
-  if (gameOver || gameRes) {
+  if (gameOver) {
     gameRestart();
   }
 
@@ -122,7 +136,7 @@ void gameRestart() {
   if (tempVal==60) {
     resetGameState();
     tempVal = 0;
-    gameRes = false;
+    gameOver = false;
   }
 }
 
@@ -215,7 +229,6 @@ void dissolveBlocks()
         tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
       }
     }
-
     blocksToRemove.clear();
   }
 }
@@ -229,23 +242,24 @@ void lockCurrPieceToMap()
     for (int x = 0; x < 4; x++)
     {
       int pieceIndex = rotatef(x, y, rotationState);
-      if (tetrominoes[currPieceType][colChecker].charAt(pieceIndex) == '1')
+      if (tetrominoes[currPieceType].charAt(pieceIndex) == '1')
       {
         int mapIndex = (currPieceY + y) * mapWidth + (currPieceX + x);
         if (mapIndex >= 0)
         {
           map[mapIndex] = currPieceType + 2;
-          if (noiseChecker(tetrominoes[currPieceType][colChecker])) {
+          if (noiseChecker(tetrominoes[currPieceType])) {
             tileColors[mapIndex] = blockColour;
           } else {
             tileColors[mapIndex] = noiseBlockColour;
           }
-          blocksThatFit++;
+          //blocksThatFit++;
+          blocksThatFit = currPieceY;
         }
       }
     }
   }
-  if (blocksThatFit < 4)
+  if (blocksThatFit < 0)
   {
     gameOver = true;
   }
@@ -258,6 +272,7 @@ void lockCurrPieceToMap()
   }
 }
 
+
 // Check if the piece fits in the position it's trying to move into
 boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
 {
@@ -269,7 +284,7 @@ boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
       int mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
       if (movingToX + x <= 0 || movingToX + x >= mapWidth - 1)
       {
-        if (tetrominoes[currPieceType][colChecker].charAt(pieceIndex) == '1')
+        if (tetrominoes[currPieceType].charAt(pieceIndex) == '1')
         {
           return false;
         }
@@ -278,7 +293,7 @@ boolean checkIfPieceFits(int movingToX, int movingToY, int rotation)
       {
         if (movingToY + y >= 0 && movingToY + y < mapHeight)
         {
-          if (tetrominoes[currPieceType][colChecker].charAt(pieceIndex) == '1' && map[mapIndex] != 0)
+          if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && map[mapIndex] != 0)
           {
             return false;
           }
@@ -344,6 +359,8 @@ int rotatef(int rx, int ry, int rState)
 
 void resetGameState()
 {
+  tetrominoes = new String[0];
+  generateBlocks(regBlocks, noiseBlocks);
   createMap();
   getNewPiece();
   gameOver = false;
