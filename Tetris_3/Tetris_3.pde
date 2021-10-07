@@ -4,11 +4,11 @@ import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
 import processing.javafx.*;
 
-boolean controllerActive = true; // Set to true if controller connected
+boolean controllerActive = false; // Set to true if controller connected
 
 //Sizing setup
-int resX = 700;
-int resY = 700;
+int resX = 1280;
+int resY = 800;
 int mapWidth = resX/25;
 int mapHeight = resY/25;
 int bToRemove = mapWidth-2;
@@ -18,7 +18,7 @@ int tileWidth = fidelity;
 int tileHeight = fidelity;
 int spacer = 3;
 color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
-int numberOfBlocks = 100;
+int numberOfBlocks = 200;
 
 // controller variables
 ControlIO control;
@@ -34,7 +34,6 @@ float initialVal1 = 0.0;
 float initialVal2 = 0.0;
 float timerVal1 = 0.0;
 float timerVal2 = 0.0;
-
 
 //Data Variables
 String csv[];
@@ -75,7 +74,6 @@ void settings()
 
 void setup()
 {
-
   // Controller set up
   if (controllerActive) {
     control = ControlIO.getInstance(this);
@@ -120,6 +118,8 @@ void setup()
   mapFillerShape.setStroke(false);
   createMap();
   getNewPiece();
+  
+  println(tetrominoes[92]);
 }
 
 void draw()
@@ -139,6 +139,9 @@ void draw()
   noStroke();
   fill(bg);
   rect(-1, -1, width+1, 68);
+  
+  println(rowChecker);
+  //saveFrame("Save/#####.tif");
 }
 
 void gameRestart() {
@@ -150,6 +153,7 @@ void gameRestart() {
     tempVal = 0;
     gameOver = false;
   }
+
 }
 
 // Main gameplay logic loop - push the current piece down, check inputs and remove full rows if they exist
@@ -372,6 +376,7 @@ int rotatef(int rx, int ry, int rState)
 void resetGameState()
 {
   tetrominoes = new String[0];
+  rowChecker = 0;
   generateBlocks(regBlocks, noiseBlocks);
   createMap();
   getNewPiece();

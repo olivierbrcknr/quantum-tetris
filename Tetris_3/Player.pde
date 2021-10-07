@@ -33,13 +33,12 @@ void drawFallingPiece()
   popMatrix();
 }
 
-// this algo is fucked needs to change
 void getNewPiece()
 {
-  if (rowChecker < tetrominoes.length-1) {
+  if (rowChecker <= numberOfBlocks) {
     rowChecker++;
   }
-  if (rowChecker==tetrominoes.length) {
+  if (rowChecker == numberOfBlocks) {
     rowChecker = 0;
   }
 
