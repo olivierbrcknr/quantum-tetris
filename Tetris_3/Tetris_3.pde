@@ -4,9 +4,11 @@ import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
 import processing.javafx.*;
 
+boolean controllerActive = true; // Set to true if controller connected
+
 //Sizing setup
-int resX = 800;
-int resY = 800;
+int resX = 700;
+int resY = 700;
 int mapWidth = resX/25;
 int mapHeight = resY/25;
 int bToRemove = mapWidth-2;
@@ -65,7 +67,6 @@ PShape mapFillerShape;
 ArrayList<Integer> blocksToRemove = new ArrayList<Integer>();
 float blockDissolveTimer = 0;
 
-
 float tempVal = 0;
 void settings()
 {
@@ -74,9 +75,12 @@ void settings()
 
 void setup()
 {
+
   // Controller set up
-  //control = ControlIO.getInstance(this);
-  //device = control.getMatchedDevice("NES_Suily_Controller");
+  if (controllerActive) {
+    control = ControlIO.getInstance(this);
+    device = control.getMatchedDevice("NES_Suily_Controller");
+  }
 
   // Load Data
   csv = loadStrings("TETRIS_blocks.csv");
@@ -121,7 +125,9 @@ void setup()
 void draw()
 {
   background(bg);
-  //getUserInput();
+  if (controllerActive) {
+    getUserInput();
+  }
   update();
   drawForeground();
   drawFallingPiece();
