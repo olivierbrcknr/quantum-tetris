@@ -6,7 +6,7 @@ import processing.javafx.*;
 
 boolean controllerActive = false; // Set to true if controller connected
 
-//Sizing setup9
+//Sizing setup
 int resX = 1280;
 int resY = 800;
 int mapWidth = resX/25;
