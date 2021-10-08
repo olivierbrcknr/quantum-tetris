@@ -1,17 +1,27 @@
 void generateBlocks(String reg[], String noise[]) {
   int dial = 0;
-
-
   for (int i=0; i<numberOfBlocks; i++) {
     float random = random(numberOfBlocks);
+    int regRand = (int)random(reg.length-1);
+    int noiseRand = (int)random(noise.length-1);
     if (random<dial) {
-      tetrominoes = append(tetrominoes, noise[i]);
+      //tetrominoes = append(tetrominoes, noise[i]);
+      tetrominoes = append(tetrominoes, noise[noiseRand]);
     } else {
-      tetrominoes = append(tetrominoes, reg[i]);
+      //tetrominoes = append(tetrominoes, reg[i]);
+      tetrominoes = append(tetrominoes, reg[regRand]);
     }
     dial++;
   }
 }
+
+void addBlocks(int add) {
+  for (int i=0; i<add; i++) {
+    int random = (int)random(numberOfBlocks);
+    tetrominoes = append(tetrominoes, noiseBlocks[random]);
+  }
+}
+
 void createMap() //Create map border
 {
   for (int y = 0; y < mapHeight; y++)
@@ -89,11 +99,7 @@ void drawGameOverScreen()
     {
       if (map[y * mapWidth + x] == 0)
       {
-        //if (tempVal%10==0) {
         mapFillerShape.setFill(blockColour);
-        //} else {
-        //mapFillerShape.setFill(gridColor);
-        //}
         shape(mapFillerShape);
       }
       translate(tileWidth, 0);

@@ -35,19 +35,17 @@ void drawFallingPiece()
 
 void getNewPiece()
 {
-  if (rowChecker <= numberOfBlocks) {
-    rowChecker++;
-  }
+  rowChecker++;
+  
   if (rowChecker == numberOfBlocks) {
-    rowChecker = 0;
+    addBlocks(250);
   }
 
   currPieceType = rowChecker;
   rotationState = 0;
   currPieceX = 0;
   currPieceX = (int)map(random(mapWidth), 0, mapWidth, 0, mapWidth-4); //random horizontal distribution
-  //currPieceX = mapWidth / 2 - 2;
-  currPieceY = -5;//or -4?
+  currPieceY = -4;//or -4?
 
   pushDownTimer = millis();
 }

@@ -6,7 +6,7 @@ import processing.javafx.*;
 
 boolean controllerActive = false; // Set to true if controller connected
 
-//Sizing setup
+//Sizing setup9
 int resX = 1280;
 int resY = 800;
 int mapWidth = resX/25;
@@ -18,7 +18,7 @@ int tileWidth = fidelity;
 int tileHeight = fidelity;
 int spacer = 3;
 color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
-int numberOfBlocks = 200;
+int numberOfBlocks = 150;
 
 // controller variables
 ControlIO control;
@@ -118,8 +118,9 @@ void setup()
   mapFillerShape.setStroke(false);
   createMap();
   getNewPiece();
-  
-  println(tetrominoes[92]);
+
+  println(mapWidth);
+  println(mapHeight);
 }
 
 void draw()
@@ -139,9 +140,8 @@ void draw()
   noStroke();
   fill(bg);
   rect(-1, -1, width+1, 68);
-  
+
   println(rowChecker);
-  //saveFrame("Save/#####.tif");
 }
 
 void gameRestart() {
@@ -153,7 +153,6 @@ void gameRestart() {
     tempVal = 0;
     gameOver = false;
   }
-
 }
 
 // Main gameplay logic loop - push the current piece down, check inputs and remove full rows if they exist
@@ -375,6 +374,7 @@ int rotatef(int rx, int ry, int rState)
 
 void resetGameState()
 {
+  saveFrame("game/###.png");
   tetrominoes = new String[0];
   rowChecker = 0;
   generateBlocks(regBlocks, noiseBlocks);
