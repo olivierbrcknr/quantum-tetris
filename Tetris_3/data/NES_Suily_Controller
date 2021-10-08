@@ -1,7 +1,0 @@
-Tetris controller
-D-pad L/R	left/right D-pad	3	SLIDER	x	0	1.0	0.0
-D-pad U/D	up/down D-pad	3	SLIDER	y	0	1.0	0.0
-A	A button	1	BUTTON	1	0	0.0	0.0
-B	B button	1	BUTTON	2	0	0.0	0.0
-Start	Start button	1	BUTTON	9	0	0.0	0.0
-Select	Select button	1	BUTTON	8	0	0.0	0.0
