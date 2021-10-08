@@ -4,10 +4,10 @@ import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
 import processing.javafx.*;
 
-boolean controllerActive = true; // Set to true if controller connected
+boolean controllerActive = false; // Set to true if controller connected
 
 //Sizing setup9
-int resX = 280;
+int resX = 1280;
 int resY = 800;
 int mapWidth = resX/25;
 int mapHeight = resY/25;
@@ -19,8 +19,6 @@ int tileHeight = fidelity;
 int spacer = 3;
 color[] tileColors = new color[mapWidth * mapHeight]; // Keeps track of the color of all tiles
 int numberOfBlocks = 150;
-
-int counter = 0;
 
 // controller variables
 ControlIO control;
@@ -370,5 +368,5 @@ void resetGameState()
   gameOver = false;
   secondsSinceStart = 0;
   secondCounter = millis();
-  pushDownDelay = 1000;
+  pushDownDelay = 800;
 }

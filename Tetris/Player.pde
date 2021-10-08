@@ -36,7 +36,7 @@ void drawFallingPiece()
 void getNewPiece()
 {
   rowChecker++;
-  
+
   if (rowChecker == numberOfBlocks) {
     addBlocks(250);
   }
@@ -45,11 +45,33 @@ void getNewPiece()
   rotationState = 0;
   currPieceX = 0;
   currPieceX = (int)map(random(mapWidth), 0, mapWidth, 0, mapWidth-4); //random horizontal distribution
-  currPieceY = -4;//or -4?
-
+  //currPieceY = -4;//or -4?
   pushDownTimer = millis();
-}
 
+
+  for (int y = 0; y < 4; y++)
+  {
+    for (int x = 0; x < 4; x++)
+    {
+      if (tetrominoes[currPieceType].charAt(rotatef(x, y, rotationState)) == '1') {
+        if (y==3) {
+          currPieceY = -3;
+          println("4");
+        }
+        if (y==2) {
+          currPieceY = -2;
+          println("3");
+        }
+        if (y==1) {
+          currPieceY = -1;
+        }
+        if ( y==0) {
+          currPieceY = 0;
+        }
+      }
+    }
+  }
+}
 
 boolean noiseChecker(String input) { //true if one of 7, else false
   String var1 = "0000001000100110";
@@ -58,7 +80,7 @@ boolean noiseChecker(String input) { //true if one of 7, else false
   String var4 = "0010001000100010";
   String var5 = "0010011000100000";
   String var6 = "0100011000100000";
-  String var7 = "0110011000000000";
+  String var7 = "0000011001100000";
 
   if (input.equals(var1) || input.equals(var2) || input.equals(var3) || input.equals(var4) || input.equals(var5) || input.equals(var6) || input.equals(var7))
   {

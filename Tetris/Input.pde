@@ -95,31 +95,6 @@ void checkInputs()
     int rotateTest = rotationState;
     int maxRotate = 3; // How many states of rotation are allowed for a piece type
 
-    switch(currPieceType)
-    {
-    case 0:
-      maxRotate = 3;
-      break;
-    case 1:
-      maxRotate = 3;
-      break;
-    case 2:
-      maxRotate = 3;
-      break;
-    case 3:
-      maxRotate = 3;
-      break;
-    case 4:
-      maxRotate = 3;
-      break;
-    case 5:
-      maxRotate = 3;
-      break;
-    case 6:
-      maxRotate = 3;
-      break;
-    }
-
     if (rotateTest + dr == -1)
     {
       rotateTest = 3;
