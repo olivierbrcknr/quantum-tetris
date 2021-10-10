@@ -22,10 +22,8 @@ const quantumTetris = (p) => {
   // Game Setup
   let numberOfBlocks = 150;
   let rowChecker = 0;
-  let colChecker = 0; //tracks current column/run of game
-  let colNumber = 1; //put number of columns in source .csv file here
-  let tetrominoes = [];
 
+  let tetrominoes = [];
   let regBlocks = [];
   let regBlocksCount = 0;
   let noiseBlocks = [];
@@ -37,11 +35,14 @@ const quantumTetris = (p) => {
   let pushDownDelay = 800; // Time between automatic pushdown of the falling piece
   let gameOver = false;
 
+  // get variables
+  const css = getComputedStyle(document.body)
+
   //Colours
-  let bg = p.color(20); //Background colour
-  let blockColour = p.color(255); //Colour of tetris block
-  let noiseBlockColour = p.color(255, 0, 0); //Colour of 'noisy' tetris block
-  let gridColor = p.color(40);
+  let bg = p.color( css.getPropertyValue('--color-tetris-bg') ); //Background colour
+  let blockColour = p.color( css.getPropertyValue('--color-tetris-block') ); //Colour of tetris block
+  let noiseBlockColour = p.color( css.getPropertyValue('--color-tetris-noiseBlock') ); //Colour of 'noisy' tetris block
+  let gridColor = p.color( css.getPropertyValue('--color-tetris-grid') );
   let tileColors = []
 
   // PShape objects are used to render each different thing on screen
@@ -605,27 +606,34 @@ const quantumTetris = (p) => {
     let dy = 0; // delta y
     let dr = 0; // Delta rotate
 
+    let isListeningToKey = false
+
     if( e.keyCode === p.LEFT_ARROW ) {
       dx = -1;
+      isListeningToKey = true
     }
     if( e.keyCode === p.RIGHT_ARROW ) {
       dx = 1;
+      isListeningToKey = true
     }
 
     if( e.keyCode === p.DOWN_ARROW ) { // IE
       dy = 1;
+      isListeningToKey = true
     }
 
     if( e.keyCode === p.UP_ARROW ) { // IE
       dr = 1;
+      isListeningToKey = true
     }
 
 
     moveChecker( dx, dy, dr )
 
-
-    // prevent default
-    // return false;
+    if( isListeningToKey ){
+      // prevent default
+      return false;
+    }
 
   }
 

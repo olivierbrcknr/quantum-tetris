@@ -4,21 +4,33 @@
   --font-family:  'IBM Plex Sans', sans-serif;
   --font-family-mono:  'IBM Plex Mono', monospace;
 
-  --color-white: #FFF;
-  --color-black: #131313;
+  --font-size-reg: 20px;
+  --font-size-med: 16px;
+  --font-size-small: 13px;
+  --font-size-tiny: 10px;
 
-  --color-highlight: #00F;
+  --font-weight-reg: 300;
 
-  --color-font: var(--color-black);
-  --color-bg:   var(--color-white);
+  /* Sizes */
+  --max-width: 960px;
+
+
+  /* Tetris Colors */
+  --color-tetris-bg: #141414;
+  --color-tetris-block: #FFF;
+  --color-tetris-noiseBlock: #F00;
+  --color-tetris-grid: #282828;
+
+
+  /* Regular Colors */
+  --color-bg: var(--color-tetris-bg);
+  --color-font: #cfcfcf;
+
+  --color-font-med: #404040;
+  --color-font-med-bright: #696969;
+  --color-font-light: var(--color-tetris-grid);
+  --color-font-bright: #FFF;
 
 }
 
-/*@media (prefers-color-scheme: dark) {
-  :root {
-    --color-font:        #eee;
 
-    --color-bg:          #232429;
-    --color-highlight:   #f0f;
-  }
-}*/

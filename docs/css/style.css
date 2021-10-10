@@ -9,6 +9,107 @@ html, body {
   color: var(--color-font);
   background: var(--color-bg);
 
-  font-size: 18px;
-  line-height: 1.4;
+  font-size: var(--font-size-reg);
+  line-height: 1.6;
+  font-weight: var(--font-weight-reg);
 }
+
+a {
+  color: var(--color-font-bright);
+  text-decoration: none;
+  border-bottom: solid 1px currentColor;
+}
+a:hover {
+  color: var(--color-font-bright);
+}
+i {
+  font-style: italic;
+}
+
+p + p {
+  margin-top: 0.5em;
+}
+
+
+h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-tiny);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+#wrapper {
+  padding: 2rem;
+  max-width: var(--max-width);
+  margin: auto;
+}
+
+
+#game-wrapper {
+  display: flex;
+  margin-bottom: 3rem;
+}
+
+#game-controls {
+  padding-left: 2rem;
+}
+table {
+  font-size: 1rem;
+  margin: 1rem 0;
+  border-collapse: collapse;
+}
+table tr {
+  border-bottom: solid 1px var(--color-font);
+}
+table tr:last-child {
+  border-bottom: none;
+}
+table td {
+  padding: 1em .5em;
+  vertical-align: middle;
+  font-size: var(--font-size-med);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-reg);
+}
+table td:first-child {
+  padding-left: 0px;
+  min-width: 6em;
+}
+table td:last-child {
+  padding-right: 0px;
+}
+.keyPress {
+  display: inline-block;
+  padding: 0.2em 0.6em 0.1em 0.6em;
+  border: solid 1px var(--color-font);
+  font-size: var(--font-size-small);
+  border-radius: 4px;
+}
+
+
+
+footer {
+  font-size: var(--font-size-med);
+  margin-top: 3rem;
+  padding: 3rem 0;
+  border-top: solid 1px var(--color-font-light);
+  color: var(--color-font-med);
+}
+footer a {
+  color: var(--color-font-med-bright);
+}
+
+.columns {
+  display: flex;
+}
+.col-2 {
+  flex: 2;
+}
+
+
+
