@@ -1,0 +1,25 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,a,img,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;vertical-align:baseline;margin:0;padding:0;}:focus{outline:0;}ol,ul{list-style:none;}table{border-collapse:separate;border-spacing:0;}caption,th,td{text-align:left;font-weight:400;}blockquote:before,blockquote:after,q:before,q:after{content:"";}.clearfix:after{content:".";display:block;clear:both;visibility:hidden;line-height:0;height:0;}.clearfix{display:inline-block;}html[xmlns] .clearfix{display:block;}* html .clearfix{height:1%;}.clear{clear:both;height:0;width:0;margin:0;padding:0;}.no,.ausblenden{display:none;}
+
+header,section,footer,aside,nav,article,figure { display: block; }
+
+.preload * { -webkit-transition: none !important; -moz-transition: none !important; -ms-transition: none !important; -o-transition: none !important; }
+
+
+.seo 		{ display: none; }
+
+.clear 		{ clear: both; }
+
+* {
+	position: relative;
+	box-sizing: border-box;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}

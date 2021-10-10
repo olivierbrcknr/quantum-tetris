@@ -1,0 +1,24 @@
+:root {
+
+  /* fonts */
+  --font-family:  'IBM Plex Sans', sans-serif;
+  --font-family-mono:  'IBM Plex Mono', monospace;
+
+  --color-white: #FFF;
+  --color-black: #131313;
+
+  --color-highlight: #00F;
+
+  --color-font: var(--color-black);
+  --color-bg:   var(--color-white);
+
+}
+
+/*@media (prefers-color-scheme: dark) {
+  :root {
+    --color-font:        #eee;
+
+    --color-bg:          #232429;
+    --color-highlight:   #f0f;
+  }
+}*/

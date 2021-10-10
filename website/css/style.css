@@ -1,0 +1,14 @@
+* {
+  position: relative;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: var(--font-family);
+
+  color: var(--color-font);
+  background: var(--color-bg);
+
+  font-size: 18px;
+  line-height: 1.4;
+}
