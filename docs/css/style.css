@@ -112,4 +112,29 @@ footer a {
 }
 
 
+@media only screen and (max-width: 660px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  #wrapper {
+    padding: 1rem;
+  }
+
+  #game-wrapper {
+    flex-direction: column;
+  }
+  #tetris-game-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  #game-controls {
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+
+  .columns {
+    flex-direction: column;
+  }
+}
 

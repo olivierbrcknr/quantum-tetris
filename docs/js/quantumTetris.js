@@ -3,13 +3,17 @@ const quantumTetris = (p) => {
   let canvasDOM = null;
 
   // Sizing setup
-  const ledColumns = 10;
-  const ledRows    = 20;
+  let ledColumns = 10;
+  const ledRows  = 20;
 
   const tileSize = 22;
   const spacer = 3;
-
   const gridSize = tileSize + spacer;
+
+  if( window.innerWidth <= 600 ){
+    ledColumns = parseInt( ( window.innerWidth - 40 ) / gridSize )
+  }
+
   const resX = ledColumns * gridSize;
   const resY = ledRows    * gridSize;
   const mapWidth = ledColumns;
@@ -205,12 +209,15 @@ const quantumTetris = (p) => {
       }
 
       // push rows down
-      for ( let r = startHeight; r >= /*(startHeight - numberOfRows)*/ 0; r-- ){
+      for( let i = 0; i < numberOfRows; i++ ){
+        // const sH = startHeight - i;
+        for ( let r = startHeight; r >= /*(startHeight - numberOfRows)*/ 0; r-- ){
 
-        // push each row from bottom
-        for ( let x = 0; x < mapWidth; x++ ){
-          map[ (r-1) * mapWidth + x ] = map[ (r-2) * mapWidth + x ]
-          map[ (r-2) * mapWidth + x ] = 0;
+          // push each row from bottom
+          for ( let x = 0; x < mapWidth; x++ ){
+            map[ (r-1) * mapWidth + x ] = map[ (r-2) * mapWidth + x ]
+            map[ (r-2) * mapWidth + x ] = 0;
+          }
         }
       }
 
@@ -523,7 +530,7 @@ const quantumTetris = (p) => {
         rotateTest += dr;
       }
 
-      console.log( checkIfPieceFits(currPieceX, currPieceY, rotateTest) )
+      // console.log( checkIfPieceFits(currPieceX, currPieceY, rotateTest) )
 
       if (checkIfPieceFits(currPieceX, currPieceY, rotateTest)) {
         rotationState = rotateTest;

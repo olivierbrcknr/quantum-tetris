@@ -33,4 +33,13 @@
 
 }
 
+@media only screen and (max-width: 660px) {
 
+  :root {
+    --font-size-reg: 18px;
+    --font-size-med: 15px;
+    --font-size-small: 13px;
+    --font-size-tiny: 10px;
+  }
+
+}
