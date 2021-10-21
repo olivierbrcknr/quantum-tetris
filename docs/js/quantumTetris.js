@@ -1,18 +1,20 @@
 const quantumTetris = (p) => {
 
-  // Sizing setup
-  const ledColumns = 20
-  const ledRows    = 20
+  let canvasDOM = null;
 
-  const tileSize = 22
+  // Sizing setup
+  const ledColumns = 10;
+  const ledRows    = 20;
+
+  const tileSize = 22;
   const spacer = 3;
 
-  const gridSize = tileSize + spacer
+  const gridSize = tileSize + spacer;
   const resX = ledColumns * gridSize;
   const resY = ledRows    * gridSize;
   const mapWidth = ledColumns;
   const mapHeight = ledRows;
-  let bToRemove = mapWidth-2;
+  const bToRemove = mapWidth; // same as map width
   let map = [];
 
   //Data Variables
@@ -20,7 +22,7 @@ const quantumTetris = (p) => {
   let generatedBinaries = []
 
   // Game Setup
-  let numberOfBlocks = 150;
+  const numberOfBlocks = 150;
   let rowChecker = 0;
 
   let tetrominoes = [];
@@ -32,7 +34,9 @@ const quantumTetris = (p) => {
   let secondsSinceStart = 0; // Seconds since pressing spacebar
   let secondCounter = 0;
   let pushDownTimer = 0;
-  let pushDownDelay = 800; // Time between automatic pushdown of the falling piece
+
+  const initialPushDownDelay = 800; // Time between automatic pushdown of the falling piece
+  let pushDownDelay = initialPushDownDelay;
   let gameOver = false;
 
   // get variables
@@ -43,30 +47,16 @@ const quantumTetris = (p) => {
   let blockColour = p.color( css.getPropertyValue('--color-tetris-block') ); //Colour of tetris block
   let noiseBlockColour = p.color( css.getPropertyValue('--color-tetris-noiseBlock') ); //Colour of 'noisy' tetris block
   let gridColor = p.color( css.getPropertyValue('--color-tetris-grid') );
-  let tileColors = []
 
-  // PShape objects are used to render each different thing on screen
-  // PShape boxShape;
-  // PShape fillShape;
-  // PShape mapFillerShape;
   let blocksToRemove = []
   let blockDissolveTimer = 0;
-
   let tempVal = 0;
 
-  //
+  // piece variables
   let currPieceType = 0;
   let currPieceX = mapWidth / 2;
   let currPieceY = -1;
   let rotationState = 0;
-
-  let downHoldDelay = 70; // ms between each downwards movement tick while holding the key
-  let downPressTime = 0;
-  let strafeHoldDelay = 120;
-  let strafePressTime = -1;
-
-  let w = false, a = false, s = false, d = false, esc = false, space = false;
-
 
   const ledShape = ( color ) => {
     p.fill( color )
@@ -79,21 +69,13 @@ const quantumTetris = (p) => {
   }
 
   p.setup = () => {
-    p.createCanvas(resX,resX)
+    canvasDOM = p.createCanvas(resX,resY)
 
     generatedBinaries = JSON_file["blocks"]
-
-    // Load Data
-    // regBlocks = ""
-    // noiseBlocks = ""
-    // tetrominoes = ""
 
     for (let i=0; i < generatedBinaries.length; i++) {
 
       let blockString = generatedBinaries[i]
-
-      // var b = parseInt( blockString, 2 );
-      // console.log(b)
 
       let sub1 = blockString.substring(0, 2);
       let sub2 = blockString.substring(2, 4);
@@ -130,17 +112,11 @@ const quantumTetris = (p) => {
     drawFallingPiece();
 
     if (gameOver) {
-      // gameRestart();
+      // console.log( "Game Over 💀" )
+      gameRestart();
     }
 
-    // Hide blocks over start row
-    // p.noStroke();
-    // p.fill(bg);
-    // p.rect(-1, -1, p.width+1, 68);
-
   }
-
-  /*
 
   const gameRestart = () => {
     tempVal++;
@@ -153,7 +129,22 @@ const quantumTetris = (p) => {
     }
   }
 
-  */
+  const resetGameState = () => {
+    // enable to record screenshot at the end of the run
+    //saveFrame("game/###.png");
+    p.saveCanvas(canvasDOM, 'QuantumTetris', 'jpg');
+
+    tetrominoes = [];
+    rowChecker = 0;
+    generateBlocks(regBlocks, noiseBlocks);
+    createMap();
+    getNewPiece();
+    gameOver = false;
+    secondsSinceStart = 0;
+    secondCounter = p.millis();
+    pushDownDelay = initialPushDownDelay;
+  }
+
 
   // Main gameplay logic loop - push the current piece down, check inputs and remove full rows if they exist
   const update = () => {
@@ -169,7 +160,8 @@ const quantumTetris = (p) => {
         pushDownTimer = p.millis();
         return; // Pause until blocks have been removed
       }
-      checkInputs();
+
+      // console.log( p.millis() - pushDownTimer , pushDownDelay )
 
       // If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
       // pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
@@ -185,13 +177,13 @@ const quantumTetris = (p) => {
   }
 
   const checkForRows = () => {
-    for (let y = 0; y < mapHeight - 1; y++) {
+    for (let y = 0; y < mapHeight; y++) {
       let piecesInRow = 0;
-      for (let x = 1; x < mapWidth - 1; x++) {
+      for (let x = 0; x < mapWidth; x++) {
         if (map[y * mapWidth + x] != 0) piecesInRow++;
       }
       if (piecesInRow == bToRemove) {
-        for (let i = 1; i < mapWidth - 1; i++) {
+        for (let i = 0; i < mapWidth; i++) {
           blocksToRemove.push(y * mapWidth + i);
           blockDissolveTimer = p.millis();
         }
@@ -202,30 +194,26 @@ const quantumTetris = (p) => {
   const dissolveBlocks = () => {
     let dissolveTime = 200;
     if (p.millis() - blockDissolveTimer > dissolveTime) {
-      let startHeight = ( blocksToRemove[ blocksToRemove.length - 1 ] + 1 ) / mapWidth;
-      let rowsToRemoveHeights = [];
-      for (let i = 0; i < blocksToRemove.length / bToRemove; i++) {
 
-        rowsToRemoveHeights.push( (blocksToRemove[bToRemove * i] + 1) / mapWidth )
+      // get rows that need to be removed
+      let startHeight = ( blocksToRemove[ blocksToRemove.length - 1 ] + 1 ) / mapWidth;
+      let numberOfRows = blocksToRemove.length / mapWidth;
+
+      // remove lines
+      for( let i = 0; i < blocksToRemove.length; i++ ){
+        map[ blocksToRemove[i] ] = 0
       }
-      let numRowsToDisplace = 0;
-      for (let y = startHeight; y >= 0; y--) {
-        let doDisplace = true;
-        for (let j = 0; j < rowsToRemoveHeights.length; j++) {
-          if (y == rowsToRemoveHeights[j]) {
-            numRowsToDisplace++;
-            doDisplace = false;
-          }
-        }
-        for (let x = 1; x < mapWidth - 1; x++) {
-          if (doDisplace) {
-            map[(y + numRowsToDisplace) * mapWidth + x] = map[y * mapWidth + x]; //ERROR
-            tileColors[(y + numRowsToDisplace) * mapWidth + x] = tileColors[y * mapWidth + x];
-          }
-          map[y * mapWidth + x] = 0;
-          tileColors[y * mapWidth + x] = color(0, 0, 0, 255);
+
+      // push rows down
+      for ( let r = startHeight; r >= /*(startHeight - numberOfRows)*/ 0; r-- ){
+
+        // push each row from bottom
+        for ( let x = 0; x < mapWidth; x++ ){
+          map[ (r-1) * mapWidth + x ] = map[ (r-2) * mapWidth + x ]
+          map[ (r-2) * mapWidth + x ] = 0;
         }
       }
+
       blocksToRemove = [];
       updateGameSpeed();
     }
@@ -239,20 +227,20 @@ const quantumTetris = (p) => {
         let pieceIndex = rotatef(x, y, rotationState);
         if (tetrominoes[currPieceType].charAt(pieceIndex) == '1') {
           let mapIndex = (currPieceY + y) * mapWidth + (currPieceX + x);
-          if (mapIndex >= 0)
-          {
+          if (mapIndex >= 0) {
             map[mapIndex] = currPieceType + 2;
             if (noiseChecker(tetrominoes[currPieceType])) {
-              tileColors[mapIndex] = blockColour;
+              map[mapIndex] = 1
             } else {
-              tileColors[mapIndex] = noiseBlockColour;
+              map[mapIndex] = 2
             }
             blocksThatFit = currPieceY;
           }
         }
       }
     }
-    if (blocksThatFit < 0) {
+
+    if (blocksThatFit <= 0) {
       gameOver = true;
     }
     if (!gameOver) {
@@ -267,27 +255,19 @@ const quantumTetris = (p) => {
       for (let x = 0; x < 4; x++) {
         let pieceIndex = rotatef(x, y, rotation);
         let mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
-        if (movingToX + x <= 0 || movingToX + x >= mapWidth - 1) {
+        if (movingToX + x < 0 || movingToX + x > mapWidth - 1) {
           if (tetrominoes[currPieceType].charAt(pieceIndex) == '1') {
             return false;
           }
         }
 
-        // console.log( tetrominoes[currPieceType].charAt(pieceIndex), map[mapIndex], map[mapIndex] !== 0 )
-
-        let pseudoMapIndex = map[mapIndex]
-        if( mapIndex >= map.length ){
-          // console.log(' would be undefined ')
-          return false
-        }
-
         if (movingToX + x >= 0 && movingToX + x < mapWidth) {
-          if (movingToY + y >= 0 && movingToY + y < mapHeight) {
-            if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && pseudoMapIndex !== 0  ) {
-
-              // console.log('hit')
+          if (movingToY + y >= 0 && movingToY + y <= mapHeight) {
+            if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && map[mapIndex] !== 0  ) {
               return false;
             }
+          } else if ( movingToY + y > mapHeight ){
+            return false
           }
         }
       }
@@ -295,23 +275,22 @@ const quantumTetris = (p) => {
     return true;
   }
 
-  /*
-
   // Instantly place the current piece at the lowest polet directly below it
   const placePieceDownInstantly = () => {
     let lastFitY = 0;
-    for (let y = 0; y < mapHeight + 2; y++){
-      if (checkIfPieceFits(currPieceX, currPieceY + y, rotationState))
-      {
+    let foundPosition = false
+    let y = 0
+    while( !foundPosition ){
+      if ( checkIfPieceFits(currPieceX, currPieceY + y, rotationState) ) {
         lastFitY = currPieceY + y
       } else {
+        foundPosition = true
         currPieceY = lastFitY
-        lockCurrPieceToMap()
+        lockCurrPieceToMap();
       }
+      y++
     }
   }
-
-  */
 
   const updateGameSpeed = () => {
     if (pushDownDelay>100) {
@@ -335,7 +314,6 @@ const quantumTetris = (p) => {
     }
   }
 
-  /*
   const resetGame = () => {
     tetrominoes = "";
     rowChecker = 0;
@@ -347,8 +325,6 @@ const quantumTetris = (p) => {
     secondCounter = millis();
     pushDownDelay = 800;
   }
-
-  */
 
   // Map —————————————————————————————————————————————
 
@@ -396,30 +372,33 @@ const quantumTetris = (p) => {
     p.translate(gridSize/2, gridSize/2);
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
-        if (map[y * mapWidth + x] == 0) {
-          ledShape( gridColor )
-        } else {
 
-          let fillColor = bg
-          if (map[y * mapWidth + x] !== 1) {
-            fillColor = tileColors[y * mapWidth + x]
-          }
+        let fillColor = gridColor
 
-          if (blocksToRemove.length > 0) {
-            for (let j = 0; j < blocksToRemove.length; j++) {
-              if ((y * mapWidth + x) == blocksToRemove[j]) {
-                let curTileColor = tileColors[y * mapWidth + x];
-
-                // A formula with random numbers to create the effect when clearing rows
-                curTileColor += (p.cos(curTileColor) * 3.14 * (2.71 - curTileColor) + (curTileColor * 4.66)) * 0.0001;
-
-                let fillColor = curTileColor
-                tileColors[y * mapWidth + x] = curTileColor;
-              }
-            }
-          }
-          ledShape( fillColor )
+        switch( map[y * mapWidth + x] ){
+          // regular LED
+          case 1:
+            fillColor = blockColour
+            break;
+          // is noise
+          case 2:
+            fillColor = noiseBlockColour
+            break;
+          // everything else
+          default:
+            fillColor = gridColor
+            break;
         }
+
+        // highlight the blocks that get removed
+        if (blocksToRemove.length > 0) {
+          if( blocksToRemove.includes( (y * mapWidth + x) )  ) {
+            fillColor = p.color('blue')
+          }
+        }
+
+        ledShape( fillColor )
+
         p.translate(gridSize, 0);
       }
       p.translate(0, gridSize);
@@ -428,46 +407,36 @@ const quantumTetris = (p) => {
     p.pop();
   }
 
-  /*
-
+  // fill empty tiles with white LEDs
   const drawGameOverScreen = () => {
-    pushMatrix();
-    p.translate(resX/2 - ((tileSize * mapWidth) / 2), 68);
-    p.translate(tileSize/2, tileSize/2);
-    for (let y = 0; y < mapHeight; y++)
-    {
-      for (let x = 0; x < mapWidth; x++)
-      {
-        if (map[y * mapWidth + x] == 0)
-        {
-          mapFillerShape.setFill(blockColour);
-          shape(mapFillerShape);
+    p.push();
+
+    p.translate(gridSize/2, gridSize/2);
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        if (map[y * mapWidth + x] == 0) {
+          ledShape( blockColour )
         }
-        p.translate(tileSize, 0);
+        p.translate(gridSize, 0);
       }
-      p.translate(0, tileSize);
-      p.translate(-(tileSize * mapWidth), 0);
+      p.translate(0, gridSize);
+      p.translate(-(gridSize * mapWidth), 0);
     }
-    popMatrix();
+    p.pop();
   }
 
   // quantum related —————————————————————————————————————————————
 
-  */
-
   // Draw current falling tetronimo
   const drawFallingPiece = () => {
     p.push();
-    // p.translate(resX/2 - ((gridSize * mapWidth) / 2), 68);
+
     p.translate(gridSize / 2, gridSize / 2);
     p.translate(gridSize * currPieceX, gridSize * currPieceY);
 
-    for (let y = 0; y < 4; y++)
-    {
-      for (let x = 0; x < 4; x++)
-      {
-        if (tetrominoes[currPieceType].charAt(rotatef(x, y, rotationState)) == '1')
-        {
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (tetrominoes[currPieceType].charAt(rotatef(x, y, rotationState)) == '1') {
           let ledFill = noiseBlockColour
           if (noiseChecker(tetrominoes[currPieceType])) {
             ledFill = blockColour;
@@ -486,48 +455,40 @@ const quantumTetris = (p) => {
     rowChecker++;
 
     if (rowChecker == numberOfBlocks) {
-      addBlocks(250);
+      addBlocks(numberOfBlocks);
     }
 
     currPieceType = rowChecker;
-    rotationState = 0;
-    //random horizontal distribution
-    currPieceX = p.int( p.map(p.random(mapWidth), 0, mapWidth, 0, mapWidth-4) );
-    //currPieceY = -4;
-    pushDownTimer = p.millis();
 
+    // random rotaiton
+    rotationState = p.int( p.random(3) );
+
+    // make sure the piece would fit in the x axis
+    let fitsInX = false
+
+    while( !fitsInX ){
+      //random horizontal distribution
+      currPieceX = p.int( p.map( p.random(mapWidth), 0, mapWidth, -2, mapWidth-2) );
+
+      if( checkIfPieceFits(currPieceX,-4,rotationState) ){
+        fitsInX = true;
+      }
+    }
+
+    // adjust y position for the piece to appear
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
-
         if (tetrominoes[currPieceType].charAt(rotatef(x, y, rotationState)) == '1') {
-          if (y==3) {
-            currPieceY = -3;
-          }
-          if (y==2) {
-            currPieceY = -2;
-          }
-          if (y==1) {
-            currPieceY = -1;
-          }
-          if ( y==0) {
-            currPieceY = 0;
-          }
+          currPieceY = -1 * y
         }
       }
     }
+
+    pushDownTimer = p.millis();
   }
 
+  // returns false if is noise
   const noiseChecker = (input) => {
-
-    // const validShapes= [
-    //   "00010111",
-    //   "00011110",
-    //   "00101011",
-    //   "01010101",
-    //   "01110100",
-    //   "10110100",
-    //   "11110000"
-    // ]
 
     const validShapes= [
       "0000001000100110",
@@ -617,13 +578,19 @@ const quantumTetris = (p) => {
       isListeningToKey = true
     }
 
-    if( e.keyCode === p.DOWN_ARROW ) { // IE
+    if( e.keyCode === p.DOWN_ARROW ) {
       dy = 1;
       isListeningToKey = true
     }
 
-    if( e.keyCode === p.UP_ARROW ) { // IE
+    if( e.keyCode === p.UP_ARROW ) {
       dr = 1;
+      isListeningToKey = true
+    }
+
+    // spacebar
+    if ( e.keyCode == 32 ) {
+      placePieceDownInstantly();
       isListeningToKey = true
     }
 
@@ -635,10 +602,6 @@ const quantumTetris = (p) => {
       return false;
     }
 
-  }
-
-  const checkInputs = () => {
-    dy = 1
   }
 
 }
