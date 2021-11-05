@@ -12,8 +12,10 @@
   --font-weight-reg: 300;
 
   /* Sizes */
-  --max-width: 960px;
-
+  --column-size: 200px;
+  --grid-gap: 1rem;
+  --max-width: calc( var(--column-size)*4 + var(--grid-gap)*5 );
+  --full-width: calc( var(--column-size)*6 + var(--grid-gap)*7 );;
 
   /* Tetris Colors */
   --color-tetris-bg: #141414;

@@ -36,6 +36,11 @@ h1 {
   margin-bottom: 1rem;
 }
 
+h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
 h4 {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-tiny);
@@ -44,11 +49,29 @@ h4 {
 }
 
 #wrapper {
-  padding: 2rem;
+  padding: var(--grid-gap);
   max-width: var(--max-width);
   margin: auto;
 }
 
+#gridDisplay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(6, minmax(20px,var(--column-size)));
+  gap: var(--grid-gap);
+  opacity: 0.5;
+  padding: 0 var(--grid-gap);
+}
+#gridDisplay .col {
+  height: 100%;
+  border-left: solid 1px var(--color-font-light);
+  border-right: solid 1px var(--color-font-light);
+}
 
 #game-wrapper {
   display: flex;
@@ -112,13 +135,91 @@ footer a {
 }
 
 
+.sliderContainer {
+  margin: calc(var(--grid-gap)*3) 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--grid-gap);
+  width: var(--full-width);;
+  padding: var(--grid-gap);
+  margin-left: calc( (var(--column-size) + var(--grid-gap)*2 ) * -1 );
+}
+.sliderContainer .info {
+  height: 500px;
+  grid-column: 1 / 3;
+  display: flex;
+  align-items: center;
+}
+.sliderContainer .info .counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 56px;
+  font-family: var(--font-family-mono);
+  font-weight: 100;
+}
+.sliderContainer .info .controls {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 56px;
+  font-family: var(--font-family-mono);
+  font-weight: 100;
+  line-height: 0.6;
+}
+.sliderContainer .imageContainer {
+  height: 500px;
+  background: #00f;
+  background: var(--color-tetris-grid);
+  border-radius: var(--grid-gap);
+  grid-column: 3 / 7;
+  box-shadow: 0px 4px 40px var(--color-tetris-bg);
+  overflow: hidden;
+}
+
+
+@media only screen and (max-width: 1360px) {
+
+  #gridDisplay {
+    grid-template-columns: 1fr repeat(4, 200px) 1fr;
+  }
+
+  .sliderContainer {
+    width: 100vw;
+    margin-left: calc( (100vw - var(--max-width)) / -2 - var(--grid-gap));
+  }
+}
+
+
+@media only screen and (max-width: 946px) {
+  #gridDisplay {
+    grid-template-columns: repeat(4, minmax(20px,var(--column-size)));
+  }
+  #gridDisplay .col:nth-child(n+5) {
+    display: none;
+  }
+  .sliderContainer {
+    max-width: var(--max-width);
+    margin-left: calc( -1 * var(--grid-gap));
+  }
+}
+
+
+
 @media only screen and (max-width: 660px) {
   h1 {
     font-size: 2rem;
   }
 
+  #gridDisplay {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  #gridDisplay .col:nth-child(n+3) {
+    display: none;
+  }
+
   #wrapper {
-    padding: 1rem;
+    padding: var(--grid-gap);
   }
 
   #game-wrapper {
