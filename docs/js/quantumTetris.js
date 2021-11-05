@@ -108,8 +108,6 @@ const quantumTetris = (p) => {
 
   p.draw = () => {
 
-    p.background(200)
-
     p.background(bg);
     update();
     drawForeground();

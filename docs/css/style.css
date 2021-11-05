@@ -60,17 +60,20 @@ h4 {
   left: 0;
   right: 0;
   bottom: 0;
-  display: grid;
+  display: none;
   justify-content: center;
   grid-template-columns: repeat(6, minmax(20px,var(--column-size)));
   gap: var(--grid-gap);
-  opacity: 0.5;
+  opacity: 1;
   padding: 0 var(--grid-gap);
 }
 #gridDisplay .col {
   height: 100%;
   border-left: solid 1px var(--color-font-light);
   border-right: solid 1px var(--color-font-light);
+}
+#gridDisplay.show {
+  display: grid;
 }
 
 #game-wrapper {
@@ -126,9 +129,14 @@ footer {
 footer a {
   color: var(--color-font-med-bright);
 }
+#toggleGrid {
+  cursor: pointer;
+  font-size: var(--font-size-small);
+}
 
 .columns {
   display: flex;
+  gap: var(--grid-gap);
 }
 .col-2 {
   flex: 2;
@@ -145,7 +153,7 @@ footer a {
   margin-left: calc( (var(--column-size) + var(--grid-gap)*2 ) * -1 );
 }
 .sliderContainer .info {
-  height: 500px;
+  height: var(--slide-height);
   grid-column: 1 / 3;
   display: flex;
   align-items: center;
@@ -158,6 +166,11 @@ footer a {
   font-family: var(--font-family-mono);
   font-weight: 100;
 }
+.sliderContainer .info .counter .maxSlides {
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--color-font-med-bright);
+}
 .sliderContainer .info .controls {
   position: absolute;
   bottom: 0;
@@ -167,14 +180,37 @@ footer a {
   font-weight: 100;
   line-height: 0.6;
 }
+.sliderContainer .info .controls img {
+  display: block;
+  cursor: pointer;
+}
+.sliderContainer .info .controls img:hover {
+  filter: brightness(2.0);
+}
+.sliderContainer .info .controls img.next {
+  display: block;
+  transform: scaleX(-1);
+}
 .sliderContainer .imageContainer {
-  height: 500px;
-  background: #00f;
+  height: var(--slide-height);
   background: var(--color-tetris-grid);
   border-radius: var(--grid-gap);
   grid-column: 3 / 7;
   box-shadow: 0px 4px 40px var(--color-tetris-bg);
   overflow: hidden;
+}
+.sliderContainer .slidesContainer {
+  display: flex;
+  height: 100%;
+  transition: margin-left 0.5s;
+}
+.sliderContainer .slidesContainer .slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: var(--slide-width);
+  height: 100%;
 }
 
 
@@ -201,7 +237,24 @@ footer a {
   .sliderContainer {
     max-width: var(--max-width);
     margin-left: calc( -1 * var(--grid-gap));
+
+    display: flex;
+    flex-direction: column-reverse;
   }
+  .sliderContainer .imageContainer {
+    height: 60vw;
+  }
+  .sliderContainer .info {
+    min-height: 140px;
+    height: auto;
+    align-items: flex-start;
+    padding-right: 120px;
+  }
+  .sliderContainer .info .counter {
+    font-size: 36px;
+    top: -0.5em;
+  }
+
 }
 
 

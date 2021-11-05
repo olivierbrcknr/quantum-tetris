@@ -15,7 +15,10 @@
   --column-size: 200px;
   --grid-gap: 1rem;
   --max-width: calc( var(--column-size)*4 + var(--grid-gap)*5 );
-  --full-width: calc( var(--column-size)*6 + var(--grid-gap)*7 );;
+  --full-width: calc( var(--column-size)*6 + var(--grid-gap)*7 );
+
+  --slide-width: 800px;
+  --slide-height: 560px;
 
   /* Tetris Colors */
   --color-tetris-bg: #141414;
