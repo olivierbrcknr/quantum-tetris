@@ -100,6 +100,9 @@ h4 {
   user-select: none;
   grid-column: 1;
 }
+.mobileControl * {
+  user-select: none;
+}
 .mobileControl:active {
   background: var(--color-font-med-bright);
 }
@@ -142,7 +145,13 @@ table td:last-child {
   border-radius: 4px;
 }
 
-
+.moreSoon {
+  color: var(--color-font-med);
+  font-family: var(--font-family-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 2rem 0;
+}
 
 footer {
   font-size: var(--font-size-med);
@@ -154,9 +163,16 @@ footer {
 footer a {
   color: var(--color-font-med-bright);
 }
+
+footer ul {
+  margin-top: 1rem;
+  font-size: var(--font-size-small);
+}
+footer ul li {
+  margin-bottom: 0.3em;
+}
 #toggleGrid {
   cursor: pointer;
-  font-size: var(--font-size-small);
 }
 
 .columns {
