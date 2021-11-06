@@ -10,7 +10,7 @@ const quantumTetris = (p) => {
 
   // Sizing setup
   let ledColumns = 10;
-  const ledRows  = 20;
+  let ledRows  = 20;
 
   const tileSize = 22;
   const spacer = 3;
@@ -18,6 +18,10 @@ const quantumTetris = (p) => {
 
   if( window.innerWidth <= 600 ){
     ledColumns = parseInt( ( window.innerWidth - 40 ) / gridSize )
+    ledRows  = parseInt( ( window.innerHeight - 200 ) / gridSize  )
+    if( ledRows > 20 ){
+      ledRows = 20
+    }
   }
 
   const resX = ledColumns * gridSize;
@@ -113,6 +117,9 @@ const quantumTetris = (p) => {
     p.noStroke()
     createMap();
     getNewPiece();
+
+    // for mobile gaming
+    setupVirtualButtons();
   }
 
   p.draw = () => {
@@ -620,7 +627,7 @@ const quantumTetris = (p) => {
 
     // spacebar
     if ( e.keyCode == 32 ) {
-      placePieceDownInstantly();
+      placePieceDownInstantly()
       isListeningToKey = true
     }
 
@@ -631,6 +638,32 @@ const quantumTetris = (p) => {
       // prevent default
       return false;
     }
+
+  }
+
+  const setupVirtualButtons = () => {
+
+    const container = document.querySelector('#tetris-game-mobileControls')
+
+    // check if is TouchDevice and display buttons
+    console.log( window.matchMedia("(pointer: coarse)").matches )
+    if( window.matchMedia("(pointer: coarse)").matches ){
+      container.style.display = "flex"
+    }
+
+    container.querySelector('.left').addEventListener('click',()=>{
+      moveChecker( -1, 0, 0 )
+    })
+    container.querySelector('.right').addEventListener('click',()=>{
+      moveChecker( 1, 0, 0 )
+    })
+    container.querySelector('.rotate').addEventListener('click',()=>{
+      moveChecker( 0, 0, 1 )
+    })
+    container.querySelector('.place').addEventListener('click',()=>{
+      placePieceDownInstantly()
+    })
+
 
   }
 
