@@ -9,11 +9,13 @@ const initSliders = () => {
 
     const container = document.querySelector('.sliderContainer')
 
-    let slideWidth  = container.querySelector('.imageContainer').offsetWidth
-    // let slideHeight = container.querySelector('.imageContainer').offsetHeight
+    if( container ){
+      let slideWidth  = container.querySelector('.imageContainer').offsetWidth
+      // let slideHeight = container.querySelector('.imageContainer').offsetHeight
 
-    root.style.setProperty('--slide-width', slideWidth + "px")
-    // root.style.setProperty('--slide-height', slideHeight + "px")
+      root.style.setProperty('--slide-width', slideWidth + "px")
+      // root.style.setProperty('--slide-height', slideHeight + "px")
+    }
   }
 
   setSlideVariables()

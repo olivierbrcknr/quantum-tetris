@@ -1,5 +1,11 @@
 const quantumTetris = (p) => {
 
+  let score = 0;
+  let currentHighScore = 0;
+  let completedRows = 0;
+
+  const rowsNeededToIncreaseGameSpeed = 5;
+
   let canvasDOM = null;
 
   // Sizing setup
@@ -41,6 +47,8 @@ const quantumTetris = (p) => {
 
   const initialPushDownDelay = 800; // Time between automatic pushdown of the falling piece
   let pushDownDelay = initialPushDownDelay;
+  // how much faster the game gets after a successful line
+  const gameSpeedIncrement = 80;
   let gameOver = false;
 
   // get variables
@@ -51,6 +59,7 @@ const quantumTetris = (p) => {
   let blockColour = p.color( css.getPropertyValue('--color-tetris-block') ); //Colour of tetris block
   let noiseBlockColour = p.color( css.getPropertyValue('--color-tetris-noiseBlock') ); //Colour of 'noisy' tetris block
   let gridColor = p.color( css.getPropertyValue('--color-tetris-grid') );
+  let removeColor = p.color( css.getPropertyValue('--color-tetris-remove') );
 
   let blocksToRemove = []
   let blockDissolveTimer = 0;
@@ -126,17 +135,21 @@ const quantumTetris = (p) => {
 
     if (tempVal==60) {
       resetGameState();
-      tempVal = 0;
-      gameOver = false;
     }
   }
 
   const resetGameState = () => {
     // enable to record screenshot at the end of the run
-    //saveFrame("game/###.png");
+    if( score > currentHighScore ){
+      currentHighScore = score
+      console.log('New High Score 🎉')
+    }
+    console.log( 'Score:',score )
+    score = 0
+    completedRows = 0
+
     p.saveCanvas(canvasDOM, 'QuantumTetris', 'jpg');
 
-    tetrominoes = [];
     rowChecker = 0;
     generateBlocks(regBlocks, noiseBlocks);
     createMap();
@@ -145,6 +158,7 @@ const quantumTetris = (p) => {
     secondsSinceStart = 0;
     secondCounter = p.millis();
     pushDownDelay = initialPushDownDelay;
+    tempVal = 0;
   }
 
 
@@ -201,6 +215,11 @@ const quantumTetris = (p) => {
       let startHeight = ( blocksToRemove[ blocksToRemove.length - 1 ] + 1 ) / mapWidth;
       let numberOfRows = blocksToRemove.length / mapWidth;
 
+      // score and speed
+      score += numberOfRows * pushDownDelay
+      completedRows += numberOfRows
+      // console.log( "Total Rows:",completedRows )
+
       // remove lines
       for( let i = 0; i < blocksToRemove.length; i++ ){
         map[ blocksToRemove[i] ] = 0
@@ -218,6 +237,8 @@ const quantumTetris = (p) => {
           }
         }
       }
+
+      fixMap()
 
       blocksToRemove = [];
       updateGameSpeed();
@@ -268,7 +289,7 @@ const quantumTetris = (p) => {
 
         if (movingToX + x >= 0 && movingToX + x < mapWidth) {
           if (movingToY + y >= 0 && movingToY + y <= mapHeight) {
-            if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && map[mapIndex] !== 0  ) {
+            if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && map[mapIndex] !== 0 && mapIndex > mapWidth ) {
               return false;
             }
           } else if ( movingToY + y > mapHeight ){
@@ -298,8 +319,9 @@ const quantumTetris = (p) => {
   }
 
   const updateGameSpeed = () => {
-    if (pushDownDelay>100) {
-      pushDownDelay -= 70
+    if (pushDownDelay>100 && completedRows % rowsNeededToIncreaseGameSpeed == 0) {
+      pushDownDelay -= gameSpeedIncrement
+      console.log('increased game speed 🏃',pushDownDelay)
     }
   }
 
@@ -319,21 +341,12 @@ const quantumTetris = (p) => {
     }
   }
 
-  const resetGame = () => {
-    tetrominoes = "";
-    rowChecker = 0;
-    generateBlocks(regBlocks, noiseBlocks);
-    createMap();
-    getNewPiece();
-    gameOver = false;
-    secondsSinceStart = 0;
-    secondCounter = millis();
-    pushDownDelay = 800;
-  }
-
   // Map —————————————————————————————————————————————
 
   const generateBlocks = (reg, noise) => {
+
+    // empty array
+    tetrominoes = [];
     let dial = 0;
 
     for (let i=0; i < numberOfBlocks; i++) {
@@ -372,6 +385,17 @@ const quantumTetris = (p) => {
     }
   }
 
+  // replace undefined with 0
+  const fixMap = () => {
+    map = map.map( el => {
+      if ( el === undefined ){
+        return 0
+      }else{
+        return el
+      }
+    } )
+  }
+
   const drawForeground = () => {
     p.push();
     p.translate(gridSize/2, gridSize/2);
@@ -397,8 +421,9 @@ const quantumTetris = (p) => {
 
         // highlight the blocks that get removed
         if (blocksToRemove.length > 0) {
+          // console.log(blocksToRemove)
           if( blocksToRemove.includes( (y * mapWidth + x) )  ) {
-            fillColor = p.color('blue')
+            fillColor = removeColor
           }
         }
 
