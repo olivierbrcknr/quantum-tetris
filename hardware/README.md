@@ -82,6 +82,8 @@ Select Finish, and reboot the Raspberry Pi.
 
 ## The Code
 
+### Installation
+
 Upload this folder (`hardware`) onto your Raspberry Pi.
 
 ```
@@ -95,3 +97,15 @@ And edit the `.bashrc` and add these lines at the end. They allow the script to 
 echo Running at boot 
 sudo python /home/pi/quantumTetris/quantumTetris.py
 ```
+
+### Development
+
+Run this code to kill the python script from boot up, if you want to develop further:
+
+```sh
+kill $(pgrep -f 'sudo python /home/pi/quantumTetris/quantumTetris.py')
+```
+
+### Controller
+
+https://core-electronics.com.au/tutorials/using-usb-and-bluetooth-controllers-with-python.html
