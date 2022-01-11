@@ -41,9 +41,7 @@ const quantumTetris = (p) => {
 
   let tetrominoes = [];
   let regBlocks = [];
-  let regBlocksCount = 0;
   let noiseBlocks = [];
-  let noiseBlocksCount = 0;
 
   let secondsSinceStart = 0; // Seconds since pressing spacebar
   let secondCounter = 0;
@@ -75,9 +73,22 @@ const quantumTetris = (p) => {
   let currPieceY = -1;
   let rotationState = 0;
 
+  const ledShapeMultiplier = 2
+  const ledSize = tileSize/ledShapeMultiplier
+
   const ledShape = ( color ) => {
+    p.push()
+
+    p.translate( -ledSize / 2, -ledSize / 2 )
+
     p.fill( color )
-    p.circle(0, 0, tileSize)
+    // p.circle(0, 0, tileSize)
+    for( let x = 0; x < ledShapeMultiplier; x++ ){
+      for( let y = 0; y < ledShapeMultiplier; y++ ){
+        p.circle(x*ledSize, y*ledSize, ledSize )
+      }
+    }
+    p.pop()
   }
 
   p.preload = () => {

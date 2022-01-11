@@ -4,10 +4,10 @@
   --font-family:  'IBM Plex Sans', sans-serif;
   --font-family-mono:  'IBM Plex Mono', monospace;
 
-  --font-size-reg: 20px;
-  --font-size-med: 16px;
+  --font-size-reg: 17px;
+  --font-size-med: 15px;
   --font-size-small: 13px;
-  --font-size-tiny: 10px;
+  --font-size-tiny: 11px;
 
   --font-weight-reg: 300;
 
@@ -21,19 +21,23 @@
   --slide-height: 560px;
 
   /* Tetris Colors */
-  --color-tetris-bg: #141414;
+  --color-tetris-bg: rgb(15, 16, 17); /*#141414;*/
   --color-tetris-block: #FFF;
   --color-tetris-noiseBlock: #F00;
-  --color-tetris-grid: #282828;
+  --color-tetris-grid: rgba(46, 47, 50, 0.88); /*#282828;*/
   --color-tetris-remove: #00f;
 
 
   /* Regular Colors */
   --color-bg: var(--color-tetris-bg);
-  --color-font: #cfcfcf;
+  --color-bg-med: rgb(29, 30, 31);
+  --color-bg-light: rgba(59, 60, 63, 0.88);
 
-  --color-font-med: #404040;
-  --color-font-med-bright: #696969;
+
+  --color-font: rgba(255, 255, 255, 0.88); /*#cfcfcf;*/
+
+  --color-font-med: #868787; /*#404040;*/
+  --color-font-med-bright: #B1B2B2; /*#696969;*/
   --color-font-light: var(--color-tetris-grid);
   --color-font-bright: #FFF;
 

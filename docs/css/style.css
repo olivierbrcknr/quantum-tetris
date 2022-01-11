@@ -3,6 +3,11 @@
   box-sizing: border-box;
 }
 
+::selection {
+  background-color: var(--color-font);
+  color: var(--color-bg);
+}
+
 html, body {
   font-family: var(--font-family);
 
@@ -10,7 +15,7 @@ html, body {
   background: var(--color-bg);
 
   font-size: var(--font-size-reg);
-  line-height: 1.6;
+  line-height: 1.8;
   font-weight: var(--font-weight-reg);
 }
 
@@ -27,7 +32,7 @@ i {
 }
 
 p + p {
-  margin-top: 0.5em;
+  margin-top: 1em;
 }
 
 
@@ -60,20 +65,22 @@ h4 {
   left: 0;
   right: 0;
   bottom: 0;
-  display: none;
+  display: grid;
   justify-content: center;
   grid-template-columns: repeat(6, minmax(20px,var(--column-size)));
   gap: var(--grid-gap);
   opacity: 1;
   padding: 0 var(--grid-gap);
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 #gridDisplay .col {
   height: 100%;
-  border-left: solid 1px var(--color-font-light);
-  border-right: solid 1px var(--color-font-light);
+  border-left: solid 1px var(--color-bg-med);
+  border-right: solid 1px var(--color-bg-med);
 }
 #gridDisplay.show {
-  display: grid;
+  opacity: 1;
 }
 
 #game-wrapper {
@@ -181,6 +188,36 @@ footer ul li {
 }
 .col-2 {
   flex: 2;
+}
+
+.footerLinks {
+  margin-top: 1.5rem;
+}
+
+.legal {
+  margin-top: 1.5rem;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-tiny);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-font-med);
+}
+
+.btn {
+  border-radius: 2px;
+  background: var(--color-tetris-grid);
+  padding: 0.8em 1em;
+  border: none;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-tiny);
+  text-transform: uppercase;
+  color: var(--color-font);
+  letter-spacing: 0.1em;
+  user-select: none;
+}
+.btn:hover {
+  color: var(--color-font-bright);
+  background: var(--color-bg-light)
 }
 
 

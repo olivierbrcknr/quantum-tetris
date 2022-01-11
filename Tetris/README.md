@@ -3,7 +3,7 @@
 Import the following libraries into Processing for the game to function:
 
 - Game Controller Plus 1.2.2 by Peter Lager 
-- Processing JavaFX ( import processing.javafx.*; )
+- Processing JavaFX ( `import processing.javafx.*;` )
  
 
 Edit the following variables to change the parameters of the game
@@ -21,7 +21,7 @@ boolean controllerActive = true;
 
 void resetGameState()
 {
-//saveFrame("game/###.png"); // enable this line to take screenshot when game ends
+  // saveFrame("game/###.png"); // enable this line to take a screenshot when game ends
 }
 
 ...
