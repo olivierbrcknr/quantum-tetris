@@ -299,6 +299,11 @@ const quantumTetris = (p) => {
       for (let x = 0; x < 4; x++) {
         let pieceIndex = rotatef(x, y, rotation);
         let mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
+
+        if(tetrominoes[currPieceType].charAt(pieceIndex) == '1' && mapIndex >= map.length){
+          return false;
+        }
+
         if (movingToX + x < 0 || movingToX + x > mapWidth - 1) {
           if (tetrominoes[currPieceType].charAt(pieceIndex) == '1') {
             return false;

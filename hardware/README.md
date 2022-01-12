@@ -95,7 +95,7 @@ And edit the `.bashrc` and add these lines at the end. They allow the script to 
 
 ```
 echo Running at boot 
-sudo python /home/pi/quantumTetris/quantumTetris.py
+python /home/pi/quantumTetris/quantumTetris.py
 ```
 
 ### Development
@@ -103,9 +103,20 @@ sudo python /home/pi/quantumTetris/quantumTetris.py
 Run this code to kill the python script from boot up, if you want to develop further:
 
 ```sh
-kill $(pgrep -f 'sudo python /home/pi/quantumTetris/quantumTetris.py')
+kill $(pgrep -f 'python /home/pi/quantumTetris/quantumTetris.py')
+```
+
+We suggest to increase the tile size for easier development. The `--dev` flag displays a log.
+
+```
+python /home/pi/quantumTetris/quantumTetris.py --tile-size=4 --dev
 ```
 
 ### Controller
 
 https://core-electronics.com.au/tutorials/using-usb-and-bluetooth-controllers-with-python.html
+
+### Arguments to use
+
+* `--tile-size` : defines the size of a tile. Should be `1` or a multiple of `2`. Default is `2`.
+* `--dev` : Display a detailed log of the events. Default is `False`.

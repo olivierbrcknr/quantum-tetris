@@ -20,8 +20,7 @@ cd quantumTetris
 
 # Python files
 curl https://raw.githubusercontent.com/olivierbrcknr/quantum-tetris/main/hardware/quantumTetris.py > quantumTetris.py
+curl https://raw.githubusercontent.com/olivierbrcknr/quantum-tetris/main/hardware/TETRIS_blocks.csv > TETRIS_blocks.csv
 
 
 # Shell files
-curl https://raw.githubusercontent.com/olivierbrcknr/quantum-tetris/main/hardware/quantumTetris.py > quantumTetris.py
-
