@@ -18,7 +18,7 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 # Arguments ————————————————————————————————————————————————
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--tile-size", action="store", help="The size of a tile. Default: 2", default=2, type=int)
+parser.add_argument("--tile-size", action="store", help="The size of a tile. Default: 4", default=4, type=int)
 parser.add_argument('--dev', dest='isDev', action='store_true')
 parser.set_defaults(isDev=False)
 
@@ -58,6 +58,7 @@ COLOR_REMOVE = [0,0,255]
 # Variables
 tetris_map = []
 is_game_over = False
+is_pause = False
 
 # Piece Variables
 rotationState = 0
@@ -342,20 +343,24 @@ def checkIfPieceFits(movingToX, movingToY, rotation):
       pieceIndex = rotatef(x, y, rotation);
       mapIndex = int( (movingToY + y) * COLUMNS + (movingToX + x) )
 
-      if tetrominoes[currPieceType][pieceIndex] == '1' and mapIndex >= len(tetris_map):
-        return False
-
-      if movingToX + x < 0 or movingToX + x > COLUMNS - 1 :
-        if tetrominoes[currPieceType][pieceIndex] == '1':
+      if tetrominoes[currPieceType][pieceIndex] == '1':
+        if mapIndex >= len(tetris_map):
+          print("1")
           return False
 
-      if movingToX + x >= 0 and movingToX + x < COLUMNS:
-        if movingToY + y >= 0 and movingToY + y <= ROWS:
-          if tetrominoes[currPieceType][pieceIndex] == '1' and tetris_map[mapIndex] != 0 and mapIndex > COLUMNS:
-            return False;
-
-        elif movingToY + y > ROWS:
+        if movingToX + x < 0 or movingToX + x > COLUMNS - 1 :
+          print("2")
           return False
+
+        if movingToX + x >= 0 and movingToX + x < COLUMNS:
+          if movingToY + y >= 0 and movingToY + y <= ROWS:
+            if tetris_map[mapIndex] != 0 and mapIndex > COLUMNS:
+              print("3")
+              return False;
+
+          elif movingToY + y > ROWS:
+            print("4")
+            return False
 
   return True
 
@@ -431,10 +436,25 @@ def dissolveBlocks():
     blocksToRemove.clear()
     updateGameSpeed()
 
+    print( tetris_map , len(tetris_map) )
+
+
+
+ # // replace undefined with 0
+ #  const fixMap = () => {
+ #    map = map.map( el => {
+ #      if ( el === undefined ){
+ #        return 0
+ #      }else{
+ #        return el
+ #      }
+ #    } )
+ #  }
 
 def run_quantumTetris():
 
   global is_game_over
+  global is_pause
   global blocksToRemove
   global pushDownTimer
   global pushDownDelay
@@ -459,7 +479,7 @@ def run_quantumTetris():
     deltaTime = currentTime - startTime
 
     # make step (update())
-    if deltaTime >= pushDownDelay:
+    if deltaTime >= pushDownDelay and is_pause == False:
       startTime = currentTime
 
       # print( tetris_map )
@@ -551,6 +571,9 @@ def run_quantumTetris():
 
         # do nothing / black
 
+    # display one pixel in blue to indicate pause
+    if is_pause:
+      offset_canvas.SetPixel(0, 0, COLOR_REMOVE[0],COLOR_REMOVE[1],COLOR_REMOVE[2])
 
     offset_canvas = matrix.SwapOnVSync(offset_canvas)
 
@@ -571,35 +594,40 @@ selectBtn = 296
 
 def controllerRead():
 
-  global is_game_over
-
   # Gamepad Setup
   gamepad = evdev.InputDevice('/dev/input/event0')
 
   def buttonPressed( keyCode ):
 
+    global is_pause
+    global is_game_over
+
     # only allow button reads if game is running
     if is_game_over == False:
 
-      if keyCode == aBtn:
+      if keyCode == aBtn and is_pause == False:
         if IS_DEV: print('🎮 A')
         moveChecker( 0, 0, 1 )
 
-      if keyCode == bBtn:
+      if keyCode == bBtn and is_pause == False:
         if IS_DEV: print('🎮 B')
         moveChecker( 0, 0, -1 )
 
-      if keyCode == startBtn:
+      if keyCode == startBtn and is_pause == False:
         if IS_DEV: print('🎮 Start')
         placePieceDownInstantly()
 
       if keyCode == selectBtn:
         if IS_DEV: print('🎮 Select')
+        is_pause = not is_pause
 
   def dPadPressed( direction ):
 
+    global is_pause
+    global is_game_over
+
     # only allow button reads if game is running
-    if is_game_over == False:
+    if is_game_over == False and is_pause == False:
 
       if IS_DEV: print("🎮",direction)
       if direction == "up":

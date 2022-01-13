@@ -118,5 +118,5 @@ https://core-electronics.com.au/tutorials/using-usb-and-bluetooth-controllers-wi
 
 ### Arguments to use
 
-* `--tile-size` : defines the size of a tile. Should be `1` or a multiple of `2`. Default is `2`.
+* `--tile-size` : defines the size of a tile. Should be `1` or a multiple of `2`. Default is `4`.
 * `--dev` : Display a detailed log of the events. Default is `False`.

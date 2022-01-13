@@ -300,23 +300,25 @@ const quantumTetris = (p) => {
         let pieceIndex = rotatef(x, y, rotation);
         let mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
 
-        if(tetrominoes[currPieceType].charAt(pieceIndex) == '1' && mapIndex >= map.length){
-          return false;
-        }
+        // only do calculations if there is acutally a piece at this pixel
+        if( tetrominoes[currPieceType].charAt(pieceIndex) == '1' ){
 
-        if (movingToX + x < 0 || movingToX + x > mapWidth - 1) {
-          if (tetrominoes[currPieceType].charAt(pieceIndex) == '1') {
+          if(mapIndex >= map.length){
             return false;
           }
-        }
 
-        if (movingToX + x >= 0 && movingToX + x < mapWidth) {
-          if (movingToY + y >= 0 && movingToY + y <= mapHeight) {
-            if (tetrominoes[currPieceType].charAt(pieceIndex) == '1' && map[mapIndex] !== 0 && mapIndex > mapWidth ) {
-              return false;
+          if (movingToX + x < 0 || movingToX + x > mapWidth - 1) {
+            return false;
+          }
+
+          if (movingToX + x >= 0 && movingToX + x < mapWidth) {
+            if (movingToY + y >= 0 && movingToY + y <= mapHeight) {
+              if (map[mapIndex] !== 0 && mapIndex > mapWidth ) {
+                return false;
+              }
+            } else if ( movingToY + y > mapHeight ){
+              return false
             }
-          } else if ( movingToY + y > mapHeight ){
-            return false
           }
         }
       }
