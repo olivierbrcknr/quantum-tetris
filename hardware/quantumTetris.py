@@ -49,6 +49,7 @@ INITIAL_PUSHDOWN_DELAY = 800
 GAME_SPEED_INCREMENT = INITIAL_PUSHDOWN_DELAY / 10
 NUMBER_OF_BLOCKS = 150
 GAME_OVER_TIMEOUT = 3000
+DISSOLVE_TIME = 500
 
 COLOR_BG = [0,0,0]
 COLOR_BLOCK = [200,200,200]
@@ -59,6 +60,8 @@ COLOR_REMOVE = [0,0,255]
 tetris_map = []
 is_game_over = False
 is_pause = False
+is_dissolving = False
+is_button_block = False
 
 # Piece Variables
 rotationState = 0
@@ -77,8 +80,44 @@ blocksToRemove = []
 # Timing
 pushDownDelay = INITIAL_PUSHDOWN_DELAY
 pushDownTimer = 0
-blockDissolveTimer = 0
 gameOverTime = 0
+dissolveStartTime = 0
+
+score = 0
+currentHighScore = 0
+
+
+def printMap( icons = True ):
+
+  global COLUMNS
+  global ROWS
+  global tetris_map
+
+  for row in range(ROWS):
+    rowIndex = str( row )
+    if row < 10:
+      rowIndex = "0" + rowIndex
+    tetrisRow = rowIndex + ":  "
+    for col in range(COLUMNS):
+      colIndex = COLUMNS - col - 1
+      cellVal = tetris_map[ COLUMNS * row + colIndex ]
+
+      if icons:
+
+        if cellVal == 1:
+          cellVal = "⬛️"
+        elif cellVal == 2:
+          cellVal = "🟥"
+        elif cellVal == 0:
+          cellVal = "⬜️"
+        else:
+          cellVal = "❓"
+      else:
+        cellVal = str( cellVal )
+
+      tetrisRow += cellVal + " "
+
+    print( tetrisRow )
 
 
 def mapValues( inputVal, minInput, maxInput, minOutput, maxOutput ):
@@ -96,9 +135,19 @@ def resetGameState():
   global INITIAL_PUSHDOWN_DELAY
   global startTime
   global gameOverTime
+  global blocksToRemove
+  global score
+  global currentHighScore
 
+  if score > currentHighScore:
+    currentHighScore = score
+    print("\nNew High Score 🎉🎉🎉")
+  print("Score:",score)
+
+  score = 0
   completedRows = 0
   rowChecker = 0
+  blocksToRemove.clear()
   generateBlocks()
   createMap()
   getNewPiece()
@@ -143,7 +192,7 @@ def generateBlocks(addBlocks = False):
     # empty array
     tetrominoes.clear()
 
-  for i in range(0,NUMBER_OF_BLOCKS):
+  for i in range(NUMBER_OF_BLOCKS):
 
     randomVal = int( random.uniform(0, NUMBER_OF_BLOCKS) )
     regRand = int( random.uniform(0, len( regBlocks )-1) )
@@ -191,8 +240,8 @@ def getNewPiece():
       fitsInX = True
 
   # adjust y position for the piece to appear
-  for y in range(0, 4):
-    for x in range(0, 4):
+  for y in range(4):
+    for x in range(4):
       if tetrominoes[currPieceType][ rotatef(x, y, rotationState) ] == "1":
         currPieceY = -1 * y
 
@@ -209,8 +258,8 @@ def createMap():
 
   tetris_map.clear()
 
-  for x in range(0, COLUMNS):
-    for y in range(0, ROWS):
+  for x in range(COLUMNS):
+    for y in range(ROWS):
       tetris_map.append(0)
 
 
@@ -283,13 +332,13 @@ def checkForRows():
   global blocksToRemove
   global blockDissolveTimer
 
-  for y in range( 0, ROWS ):
+  for y in range( ROWS ):
     piecesInRow = 0
-    for x in range( 0, COLUMNS ):
+    for x in range( COLUMNS ):
       if tetris_map[ int( y * COLUMNS + x ) ] != 0:
         piecesInRow += 1
     if piecesInRow == COLUMNS:
-      for i in range( 0, COLUMNS ):
+      for i in range( COLUMNS ):
         blocksToRemove.append( int( y * COLUMNS + i ) )
         blockDissolveTimer = int(round(time.time() * 1000))
 
@@ -308,8 +357,8 @@ def lockCurrPieceToMap():
 
   blocksThatFit = 0
 
-  for y in range(0, 4):
-    for x in range(0, 4):
+  for y in range(4):
+    for x in range(4):
       pieceIndex = rotatef(x, y, rotationState)
       if tetrominoes[currPieceType][pieceIndex] == "1":
         mapIndex = int( (currPieceY + y) * COLUMNS + (currPieceX + x) )
@@ -338,28 +387,28 @@ def checkIfPieceFits(movingToX, movingToY, rotation):
   global pieceIndex
   global tetris_map
 
-  for y in range(0, 4):
-    for x in range(0, 4):
+  for y in range(4):
+    for x in range(4):
       pieceIndex = rotatef(x, y, rotation);
       mapIndex = int( (movingToY + y) * COLUMNS + (movingToX + x) )
 
       if tetrominoes[currPieceType][pieceIndex] == '1':
         if mapIndex >= len(tetris_map):
-          print("1")
+          if IS_DEV: print("Piece does not fit case: 1")
           return False
 
         if movingToX + x < 0 or movingToX + x > COLUMNS - 1 :
-          print("2")
+          if IS_DEV: print("Piece does not fit case: 2")
           return False
 
         if movingToX + x >= 0 and movingToX + x < COLUMNS:
           if movingToY + y >= 0 and movingToY + y <= ROWS:
             if tetris_map[mapIndex] != 0 and mapIndex > COLUMNS:
-              print("3")
+              if IS_DEV: print("Piece does not fit case: 3")
               return False;
 
           elif movingToY + y > ROWS:
-            print("4")
+            if IS_DEV: print("Piece does not fit case: 4")
             return False
 
   return True
@@ -400,61 +449,55 @@ def updateGameSpeed():
 
 def dissolveBlocks():
 
-  global blockDissolveTimer
   global blocksToRemove
   global COLUMNS
   global ROWS
   global completedRows
   global tetris_map
+  global score
+  global pushDownDelay
 
-  currentTime = int(round(time.time() * 1000))
+  # get rows that need to be removed
+  rowToCatchUpTo = int( blocksToRemove[ len( blocksToRemove ) - 1 ] / COLUMNS )
+  numberOfRows = int( len( blocksToRemove ) / COLUMNS )
 
-  dissolveTime = 200
-  if currentTime - blockDissolveTimer > dissolveTime :
+  if numberOfRows == 4:
+    score += numberOfRows * pushDownDelay * 10
+  else:
+    score += numberOfRows * pushDownDelay
 
-    # get rows that need to be removed
-    startHeight = int( ( blocksToRemove[ len( blocksToRemove ) - 1 ] + 1 ) / COLUMNS )
-    numberOfRows = int( len( blocksToRemove ) / COLUMNS )
+  completedRows += numberOfRows
 
-    completedRows += numberOfRows
+  if IS_DEV:
+    print("\nDissolving Rows:")
+    print("------------------------- stats")
+    print("numberOfRows",numberOfRows)
+    print("rowToCatchUpTo",rowToCatchUpTo)
+    print("blocksToRemove",blocksToRemove)
+    print("------------------------- before")
+    printMap()
 
-    # remove lines
-    for i in range( 0, len(blocksToRemove) ):
-      tetris_map[ blocksToRemove[i] ] = 0
+  # push rows down
+  for i in range(numberOfRows):
+    for r in reversed( range( 1 , rowToCatchUpTo + 1 ) ):
+      for c in range( COLUMNS ):
 
-    # push rows down
-    for i in range( 0, numberOfRows ):
-      for r in range( 0, startHeight ):
+        valueAbove = tetris_map[ int( (r-1) * COLUMNS + c) ]
+        if valueAbove == None:
+          valueAbove = 0
 
-        rowIndex = startHeight - r
+        tetris_map[ int( r * COLUMNS + c) ] = valueAbove
 
-        # push each row from bottom
-        for x in range( 0, COLUMNS ):
-          tetris_map[ int( (rowIndex-1) * COLUMNS + x) ] = tetris_map[ int( (rowIndex-2) * COLUMNS + x ) ]
-          tetris_map[ int( (rowIndex-2) * COLUMNS + x) ] = 0;
+  blocksToRemove.clear()
+  updateGameSpeed()
 
-    blocksToRemove.clear()
-    updateGameSpeed()
-
-    print( tetris_map , len(tetris_map) )
-
-
-
- # // replace undefined with 0
- #  const fixMap = () => {
- #    map = map.map( el => {
- #      if ( el === undefined ){
- #        return 0
- #      }else{
- #        return el
- #      }
- #    } )
- #  }
 
 def run_quantumTetris():
 
   global is_game_over
   global is_pause
+  global is_button_block
+  global is_dissolving
   global blocksToRemove
   global pushDownTimer
   global pushDownDelay
@@ -463,6 +506,7 @@ def run_quantumTetris():
   global rotationState
   global tetris_map
   global gameOverTime
+  global dissolveStartTime
   global GAME_OVER_TIMEOUT
 
   global COLOR_BG
@@ -478,6 +522,16 @@ def run_quantumTetris():
     currentTime = int(round(time.time() * 1000))
     deltaTime = currentTime - startTime
 
+    if is_pause or is_dissolving:
+      is_button_block = True
+    else:
+      is_button_block = False
+
+    if is_dissolving and currentTime - dissolveStartTime > DISSOLVE_TIME:
+      is_dissolving = False
+      dissolveStartTime = 0
+      dissolveBlocks()
+
     # make step (update())
     if deltaTime >= pushDownDelay and is_pause == False:
       startTime = currentTime
@@ -487,24 +541,23 @@ def run_quantumTetris():
       if is_game_over == False:
 
         # Remove rows of blocks if there are any to be removed
-        if len( blocksToRemove ) > 0:
-          dissolveBlocks()
-          pushDownTimer = currentTime
+        if len( blocksToRemove ) > 0 and is_dissolving == False:
+          is_dissolving = True
+          dissolveStartTime = currentTime
 
-        # If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
-        # pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
-        if currentTime - pushDownTimer > pushDownDelay:
-          if checkIfPieceFits(currPieceX, currPieceY + 1, rotationState):
-            currPieceY += 1
-          else:
-            lockCurrPieceToMap()
-          pushDownTimer = currentTime
+        if is_dissolving == False:
+          # If the falling piece wasn't manually pushed down by the player, push it down automatically after a delay
+          # pushDownTimer is manipulated to control when or if the piece should be pushed down automatically
+          if currentTime - pushDownTimer > pushDownDelay:
+            if checkIfPieceFits(currPieceX, currPieceY + 1, rotationState):
+              currPieceY += 1
+            else:
+              lockCurrPieceToMap()
 
+        pushDownTimer = currentTime
 
       # Game Over
       else:
-        if IS_DEV: print("Game Over ☠️")
-
         # run game Over
         if gameOverTime != 0:
           if currentTime - gameOverTime >= GAME_OVER_TIMEOUT:
@@ -512,18 +565,21 @@ def run_quantumTetris():
 
         # set game over time
         else:
+          if IS_DEV:
+            print("Game Over ☠️")
+            printMap()
           gameOverTime = currentTime
 
 
 
     # draw matrix
-    for x in range(0, COLUMNS):
-      for y in range(0, ROWS):
+    for x in range(COLUMNS):
+      for y in range(ROWS):
 
         mapIndex = int( x + y * COLUMNS )
 
-        for tx in range(0, TILE_SIZE):
-          for ty in range(0, TILE_SIZE):
+        for tx in range(TILE_SIZE):
+          for ty in range(TILE_SIZE):
 
             draw_x = x * TILE_SIZE + tx
             draw_y = y * TILE_SIZE + ty
@@ -601,19 +657,20 @@ def controllerRead():
 
     global is_pause
     global is_game_over
+    global is_button_block
 
     # only allow button reads if game is running
     if is_game_over == False:
 
-      if keyCode == aBtn and is_pause == False:
+      if keyCode == aBtn and is_button_block == False:
         if IS_DEV: print('🎮 A')
         moveChecker( 0, 0, 1 )
 
-      if keyCode == bBtn and is_pause == False:
+      if keyCode == bBtn and is_button_block == False:
         if IS_DEV: print('🎮 B')
         moveChecker( 0, 0, -1 )
 
-      if keyCode == startBtn and is_pause == False:
+      if keyCode == startBtn and is_button_block == False:
         if IS_DEV: print('🎮 Start')
         placePieceDownInstantly()
 
@@ -625,9 +682,10 @@ def controllerRead():
 
     global is_pause
     global is_game_over
+    global is_button_block
 
     # only allow button reads if game is running
-    if is_game_over == False and is_pause == False:
+    if is_game_over == False and is_button_block == False:
 
       if IS_DEV: print("🎮",direction)
       if direction == "up":
