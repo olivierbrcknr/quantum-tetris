@@ -10,6 +10,10 @@ import threading
 import csv
 import random
 
+
+homeDir = os.path.dirname(os.path.realpath(__file__)) + "/"
+print(homeDir)
+
 # Matrix Setup
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -84,7 +88,32 @@ gameOverTime = 0
 dissolveStartTime = 0
 
 score = 0
+
+print("\n\nStarting Log:\n")
+
 currentHighScore = 0
+if os.path.exists( homeDir + "highscore.txt" ):
+  with open( homeDir + "highscore.txt" ) as f:
+    currentHighScore = int( f.read() )
+    print("currentHighScore:",currentHighScore)
+else:
+  print("No high score file yet...")
+
+
+def printScore():
+
+  global score
+  global currentHighScore
+
+  if score > currentHighScore:
+    currentHighScore = int( score )
+    print("\nNew High Score 🎉🎉🎉")
+
+    highscoreFile = open( homeDir + "highscore.txt", "w" )
+    highscoreFile.write( str( currentHighScore ) )
+    highscoreFile.close()
+
+  print("Score:",score)
 
 
 def printMap( icons = True ):
@@ -137,12 +166,6 @@ def resetGameState():
   global gameOverTime
   global blocksToRemove
   global score
-  global currentHighScore
-
-  if score > currentHighScore:
-    currentHighScore = score
-    print("\nNew High Score 🎉🎉🎉")
-  print("Score:",score)
 
   score = 0
   completedRows = 0
@@ -569,6 +592,7 @@ def run_quantumTetris():
             print("Game Over ☠️")
             printMap()
           gameOverTime = currentTime
+          printScore()
 
 
 
