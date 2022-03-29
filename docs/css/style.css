@@ -8,7 +8,8 @@
   color: var(--color-bg);
 }
 
-html, body {
+html,
+body {
   font-family: var(--font-family);
 
   color: var(--color-font);
@@ -17,6 +18,10 @@ html, body {
   font-size: var(--font-size-reg);
   line-height: 1.8;
   font-weight: var(--font-weight-reg);
+}
+
+section + section {
+  margin-top: 3rem;
 }
 
 a {
@@ -35,9 +40,13 @@ p + p {
   margin-top: 1em;
 }
 
-
 h1 {
   font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
   margin-bottom: 1rem;
 }
 
@@ -67,7 +76,7 @@ h4 {
   bottom: 0;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(6, minmax(20px,var(--column-size)));
+  grid-template-columns: repeat(6, minmax(20px, var(--column-size)));
   gap: var(--grid-gap);
   opacity: 1;
   padding: 0 var(--grid-gap);
@@ -131,7 +140,7 @@ table tr:last-child {
   border-bottom: none;
 }
 table td {
-  padding: 1em .5em;
+  padding: 1em 0.5em;
   vertical-align: middle;
   font-size: var(--font-size-med);
   font-family: var(--font-family);
@@ -217,18 +226,17 @@ footer ul li {
 }
 .btn:hover {
   color: var(--color-font-bright);
-  background: var(--color-bg-light)
+  background: var(--color-bg-light);
 }
 
-
 .sliderContainer {
-  margin: calc(var(--grid-gap)*3) 0;
+  margin: calc(var(--grid-gap) * 3) 0;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: var(--grid-gap);
-  width: var(--full-width);;
+  width: var(--full-width);
   padding: var(--grid-gap);
-  margin-left: calc( (var(--column-size) + var(--grid-gap)*2 ) * -1 );
+  margin-left: calc((var(--column-size) + var(--grid-gap) * 2) * -1);
 }
 .sliderContainer .info {
   height: var(--slide-height);
@@ -263,7 +271,7 @@ footer ul li {
   cursor: pointer;
 }
 .sliderContainer .info .controls img:hover {
-  filter: brightness(2.0);
+  filter: brightness(2);
 }
 .sliderContainer .info .controls img.next {
   display: block;
@@ -291,30 +299,27 @@ footer ul li {
   height: 100%;
 }
 
-
 @media only screen and (max-width: 1360px) {
-
   #gridDisplay {
     grid-template-columns: 1fr repeat(4, 200px) 1fr;
   }
 
   .sliderContainer {
     width: 100vw;
-    margin-left: calc( (100vw - var(--max-width)) / -2 - var(--grid-gap));
+    margin-left: calc((100vw - var(--max-width)) / -2 - var(--grid-gap));
   }
 }
 
-
 @media only screen and (max-width: 946px) {
   #gridDisplay {
-    grid-template-columns: repeat(4, minmax(20px,var(--column-size)));
+    grid-template-columns: repeat(4, minmax(20px, var(--column-size)));
   }
-  #gridDisplay .col:nth-child(n+5) {
+  #gridDisplay .col:nth-child(n + 5) {
     display: none;
   }
   .sliderContainer {
     max-width: var(--max-width);
-    margin-left: calc( -1 * var(--grid-gap));
+    margin-left: calc(-1 * var(--grid-gap));
 
     display: flex;
     flex-direction: column-reverse;
@@ -332,21 +337,17 @@ footer ul li {
     font-size: 36px;
     top: -0.5em;
   }
-
 }
-
-
 
 @media only screen and (max-width: 660px) {
   h1 {
     font-size: 2rem;
   }
 
-
   #gridDisplay {
     grid-template-columns: repeat(2, 1fr);
   }
-  #gridDisplay .col:nth-child(n+3) {
+  #gridDisplay .col:nth-child(n + 3) {
     display: none;
   }
 
@@ -377,4 +378,3 @@ footer ul li {
     flex-direction: column;
   }
 }
-

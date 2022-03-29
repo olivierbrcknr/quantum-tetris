@@ -19,7 +19,6 @@
     <script type="text/javascript" src="js/default.js"></script>
   </head>
   <body>
-
     <div id="gridDisplay">
       <div class="col"></div>
       <div class="col"></div>
@@ -30,7 +29,6 @@
     </div>
 
     <div id="wrapper">
-
       <article>
         <section id="game-wrapper">
           <div id="tetris-game-wrapper">
@@ -38,26 +36,22 @@
           </div>
 
           <div id="tetris-game-mobileControls">
-
             <div class="mobileControl left">
-              <img src="img/left.svg">
+              <img src="img/left.svg" />
             </div>
             <div class="mobileControl right">
-              <img src="img/right.svg">
+              <img src="img/right.svg" />
             </div>
             <div class="mobileControl place">
-              <img src="img/place.svg">
+              <img src="img/place.svg" />
             </div>
             <div class="mobileControl rotate">
-              <img src="img/rotate.svg">
+              <img src="img/rotate.svg" />
             </div>
-
           </div>
 
           <div id="game-controls">
-            <h4>
-              Controls
-            </h4>
+            <h4>Controls</h4>
 
             <table>
               <tr>
@@ -65,58 +59,42 @@
                   <span class="keyPress">←</span> /
                   <span class="keyPress">→</span>
                 </td>
-                <td>
-                  move block horizontally
-                </td>
+                <td>move block horizontally</td>
               </tr>
               <tr>
                 <td>
                   <span class="keyPress">↓</span>
                 </td>
-                <td>
-                  move block down
-                </td>
+                <td>move block down</td>
               </tr>
               <tr>
                 <td>
                   <span class="keyPress">↑</span>
                 </td>
-                <td>
-                  rotate block
-                </td>
+                <td>rotate block</td>
               </tr>
               <tr>
                 <td>
                   <span class="keyPress">Space</span>
                 </td>
-                <td>
-                  instantly put down block
-                </td>
+                <td>instantly put down block</td>
               </tr>
               <tr>
                 <td>
                   <span class="keyPress">P</span>
                 </td>
-                <td>
-                  pause / unpause
-                </td>
+                <td>pause / unpause</td>
               </tr>
               <tr>
-                <td>
-                  Game Over
-                </td>
-                <td>
-                  a screenshot of the game will be downloaded
-                </td>
+                <td>Game Over</td>
+                <td>a screenshot of the game will be downloaded</td>
               </tr>
             </table>
           </div>
         </section>
 
         <section class="text">
-          <h1>
-            Quantum Tetris
-          </h1>
+          <h1>Quantum Tetris</h1>
 
           <p>
             Our Quantum Tetris game investigates the concept of true randomness
@@ -162,9 +140,27 @@
           </p>
         </section>
 
-        <div class="moreSoon">
-          // more info soon
-        </div>
+        <section>
+          <h2>Video</h2>
+          <div style="padding: 56.25% 0 0 0; position: relative">
+            <iframe
+              src="https://player.vimeo.com/video/675695355?h=e22d2913f1&color=9b9ea8&byline=0&portrait=0"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+              "
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <script src="https://player.vimeo.com/api/player.js"></script>
+        </section>
+
+        <div class="moreSoon">// more info soon</div>
 
         <!--
           General link of the jam
@@ -210,7 +206,6 @@
 
         </section>
         -->
-
       </article>
 
       <footer>
@@ -221,30 +216,41 @@
               <a href="https://www.weijingxiaony.com">Weijing Xiao</a>,
               <a href="https://www.lariemilio.com/">Emilio Lari</a>,
               <a href="https://choose-image.com/">Billy Ho</a>,
-              <a href="http://salilparekh.work" target="_blank">Salil Parekh</a>, and
+              <a href="http://salilparekh.work" target="_blank">Salil Parekh</a
+              >, and
               <a href="https://olivierbrueckner.de/">Olivier Brückner</a>. It
               has been created within the Quantum Design Jam from
-              <a href="https://www.newschool.edu/parsons/">Parsons School of Design</a>
+              <a href="https://www.newschool.edu/parsons/"
+                >Parsons School of Design</a
+              >
               and <a href="https://www.ibm.com/">IBM</a> in October 2021, in New
               York City.
             </p>
             <p>
               The project was supervised by
-              <a href="https://www.newschool.edu/parsons/faculty/sven-travis/">Sven Travis [Parsons]</a>,
-              <a href="https://it.newschool.edu/about/office-cio">Lin Zhou [Parsons]</a>,
-              <a href="https://twitter.com/OkQuantum">Paul Kassebaum [IBM]</a>, and
-              <a href="https://www.jrussellhuffman.com">Russell Huffman [IBM]</a>.
+              <a href="https://www.newschool.edu/parsons/faculty/sven-travis/"
+                >Sven Travis [Parsons]</a
+              >,
+              <a href="https://it.newschool.edu/about/office-cio"
+                >Lin Zhou [Parsons]</a
+              >,
+              <a href="https://twitter.com/OkQuantum">Paul Kassebaum [IBM]</a>,
+              and
+              <a href="https://www.jrussellhuffman.com">Russell Huffman [IBM]</a
+              >.
             </p>
             <div class="footerLinks">
-              <a class="btn" href="https://github.com/olivierbrcknr/quantum-tetris">GitHub Repository ↴</a>
+              <a
+                class="btn"
+                href="https://github.com/olivierbrcknr/quantum-tetris"
+                >GitHub Repository ↴</a
+              >
               <a class="btn" id="toggleGrid">toggle grid</a>
             </div>
           </div>
           <div class="col-2"></div>
         </div>
-        <div class="legal">
-          &copy; 2022 — the people mentioned above
-        </div>
+        <div class="legal">&copy; 2021-2022 — the people mentioned above</div>
       </footer>
     </div>
   </body>
