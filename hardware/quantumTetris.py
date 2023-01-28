@@ -674,8 +674,14 @@ selectBtn = 296
 
 def controllerRead():
 
-  # Gamepad Setup
-  gamepad = evdev.InputDevice('/dev/input/event0')
+  def findController():
+
+    devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+    for device in devices:
+      if "USB Gamepad" in device.name:
+        gamepad = device
+        print("🎮✅ gamepad is found and connected",device.path)
+        setupControls(gamepad)
 
   def buttonPressed( keyCode ):
 
@@ -721,26 +727,28 @@ def controllerRead():
       elif direction == "left":
         moveChecker( 1, 0, 0 )
 
-  #evdev takes care of polling the controller in a loop
-  for event in gamepad.read_loop():
+  def setupControls(gamepad):
+    #evdev takes care of polling the controller in a loop
+    for event in gamepad.read_loop():
 
-    keyevent = evdev.util.categorize(event)
+      keyevent = evdev.util.categorize(event)
 
-    if event.type == evdev.ecodes.EV_KEY and event.value == 1:
-      buttonPressed( event.code )
+      if event.type == evdev.ecodes.EV_KEY and event.value == 1:
+        buttonPressed( event.code )
 
-    if event.type == evdev.ecodes.EV_ABS:
-      if event.code == evdev.ecodes.ABS_X:
-        if event.value == 0:
-          dPadPressed( "left" )
-        elif event.value == 255:
-          dPadPressed( "right" )
-      else:
-        if event.value == 0:
-          dPadPressed( "up" )
-        elif event.value == 255:
-          dPadPressed( "down" )
+      if event.type == evdev.ecodes.EV_ABS:
+        if event.code == evdev.ecodes.ABS_X:
+          if event.value == 0:
+            dPadPressed( "left" )
+          elif event.value == 255:
+            dPadPressed( "right" )
+        else:
+          if event.value == 0:
+            dPadPressed( "up" )
+          elif event.value == 255:
+            dPadPressed( "down" )
 
+  findController();
 
 
 # Run ——————————————————————————————————————————————————————
