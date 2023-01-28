@@ -1,0 +1,124 @@
+.sliderContainer {
+}
+
+/* Info */
+
+.sliderInfo {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.slideDesc {
+  display: none;
+}
+.slideDesc.slideActive {
+  display: block;
+}
+
+.sliderFooter {
+  display: flex;
+  font-family: var(--font-family-mono);
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.slideCounter {
+  font-size: var(--font-size-small);
+  line-height: 1;
+}
+.slideCounter .maxSlides {
+  margin-left: 0.3em;
+  color: var(--color-font-med-dark);
+}
+.slideControls {
+  display: flex;
+  gap: 8px;
+}
+.slideControls button {
+  font-family: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  white-space: normal;
+  text-align: left;
+  border: none;
+  color: inherit;
+  outline: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  border-radius: 2px;
+  background: var(--color-tetris-grid);
+  width: 44px;
+  height: 44px;
+  color: var(--color-font);
+  letter-spacing: 0.1em;
+}
+.slideControls button:hover {
+  background: var(--color-bg-light);
+}
+.slideControls button:active {
+  background: var(--color-bg-lighter);
+}
+
+.slideControls button img {
+  display: block;
+  width: 50%;
+}
+.slideControls button.next img {
+  transform: scaleX(-1);
+}
+
+/* Images */
+.imageContainer {
+  height: var(--slide-height);
+  background: var(--color-tetris-grid);
+  border-radius: 4px;
+  box-shadow: 0px 4px 40px var(--color-tetris-bg);
+  overflow: hidden;
+}
+.slidesContainer {
+  display: flex;
+  height: 100%;
+  transition: margin-left 0.5s;
+}
+.slidesContainer .slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: var(--slide-width);
+  height: 100%;
+}
+.slidesContainer .slide img {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.slideImageDesc {
+  display: block;
+  position: absolute;
+  bottom: var(--grid-gap);
+  right: var(--grid-gap);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-tiny);
+  color: var(--color-font-med);
+  line-height: 1;
+}
+
+@media only screen and (max-width: 946px) {
+  .sliderContainer .imageContainer {
+    height: 60vw;
+  }
+
+  .sliderFooter {
+    padding-top: 1em;
+  }
+}

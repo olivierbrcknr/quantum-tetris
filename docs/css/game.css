@@ -1,0 +1,82 @@
+#game-wrapper {
+  /*display: grid;
+  grid-template-columns: 250px 1fr;
+  margin-bottom: 3rem;*/
+}
+
+#tetris-game-mobileControls {
+  display: none;
+  gap: 10px;
+  padding: 1rem 0;
+  grid-column: 1;
+}
+.mobileControl {
+  flex: 1;
+  height: 68px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--color-tetris-grid);
+  user-select: none;
+  grid-column: 1;
+}
+.mobileControl * {
+  user-select: none;
+}
+.mobileControl:active {
+  background: var(--color-bg-lighter);
+}
+
+#game-controls {
+  width: 100%;
+}
+table {
+  font-size: 1rem;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+table tr {
+  border-bottom: solid 1px var(--color-bg-light);
+}
+table tr:last-child {
+  border-bottom: none;
+}
+table td {
+  padding: 1em 0.5em;
+  vertical-align: middle;
+  font-size: var(--font-size-med);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-reg);
+}
+table td:first-child {
+  padding-left: 0px;
+  min-width: 6em;
+}
+table td:last-child {
+  padding-right: 0px;
+}
+.keyPress {
+  display: inline-block;
+  padding: 0.2em 0.6em 0.1em 0.6em;
+  border: solid 1px var(--color-font-med);
+  font-size: var(--font-size-small);
+  border-radius: 4px;
+  line-height: 20px;
+}
+
+@media only screen and (max-width: 660px) {
+  #tetris-game-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  #tetris-game-mobileControls {
+    display: flex;
+  }
+  #game-controls {
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+}

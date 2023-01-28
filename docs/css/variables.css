@@ -1,8 +1,7 @@
 :root {
-
   /* fonts */
-  --font-family:  'IBM Plex Sans', sans-serif;
-  --font-family-mono:  'IBM Plex Mono', monospace;
+  --font-family: "IBM Plex Sans", sans-serif;
+  --font-family-mono: "IBM Plex Mono", monospace;
 
   --font-size-reg: 17px;
   --font-size-med: 15px;
@@ -11,45 +10,39 @@
 
   --font-weight-reg: 300;
 
+  --line-height: 28px;
+
   /* Sizes */
-  --column-size: 200px;
+  /*  --column-size: 200px;*/
   --grid-gap: 1rem;
-  --max-width: calc( var(--column-size)*4 + var(--grid-gap)*5 );
-  --full-width: calc( var(--column-size)*6 + var(--grid-gap)*7 );
+  --max-width: 1280px;
+  /*--max-width: calc(var(--column-size) * 4 + var(--grid-gap) * 5);
+  --full-width: calc(var(--column-size) * 6 + var(--grid-gap) * 7);*/
 
   --slide-width: 800px;
   --slide-height: 560px;
 
   /* Tetris Colors */
   --color-tetris-bg: rgb(15, 16, 17); /*#141414;*/
-  --color-tetris-block: #FFF;
-  --color-tetris-noiseBlock: #F00;
+  --color-tetris-block: #fff;
+  --color-tetris-noiseBlock: #f00;
   --color-tetris-grid: rgba(46, 47, 50, 0.88); /*#282828;*/
   --color-tetris-remove: #00f;
 
-
   /* Regular Colors */
   --color-bg: var(--color-tetris-bg);
-  --color-bg-med: rgb(29, 30, 31);
-  --color-bg-light: rgba(59, 60, 63, 0.88);
+  --color-bg-med: hsl(210, 3%, 11%);
+  --color-bg-light: hsla(255, 3%, 23%, 0.88);
+  --color-bg-lighter: hsla(255, 3%, 28%, 0.88);
 
+  --color-grid: #f006;
 
-  --color-font: rgba(255, 255, 255, 0.88); /*#cfcfcf;*/
+  --color-font: hsl(180, 0%, 77%);
+  --color-font-med-dark: hsl(180, 0%, 35%);
+  --color-font-med: hsl(180, 0%, 55%);
+  --color-font-med-bright: hsl(180, 0%, 65%);
+  --color-font-bright: hsl(180, 0%, 85%);
+  --color-font-very-bright: hsl(180, 0%, 100%);
 
-  --color-font-med: #868787; /*#404040;*/
-  --color-font-med-bright: #B1B2B2; /*#696969;*/
   --color-font-light: var(--color-tetris-grid);
-  --color-font-bright: #FFF;
-
-}
-
-@media only screen and (max-width: 660px) {
-
-  :root {
-    --font-size-reg: 18px;
-    --font-size-med: 15px;
-    --font-size-small: 13px;
-    --font-size-tiny: 10px;
-  }
-
 }
