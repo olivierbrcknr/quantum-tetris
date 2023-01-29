@@ -11,23 +11,23 @@ const quantumTetris = (p) => {
   let ledColumns = 10;
   let ledRows = 20;
 
-  const tileSize = 22;
-  const spacer = 3;
-  const gridSize = tileSize + spacer;
+  const TILE_SIZE = 22;
+  const SPACER = 3;
+  const GRID_SIZE = TILE_SIZE + SPACER;
 
   if (window.innerWidth <= 600) {
-    ledColumns = parseInt((window.innerWidth - 40) / gridSize);
-    ledRows = parseInt((window.innerHeight - 200) / gridSize);
+    ledColumns = parseInt((window.innerWidth - 40) / GRID_SIZE);
+    ledRows = parseInt((window.innerHeight - 200) / GRID_SIZE);
     if (ledRows > 20) {
       ledRows = 20;
     }
   }
 
-  const resX = ledColumns * gridSize;
-  const resY = ledRows * gridSize;
-  const mapWidth = ledColumns;
-  const mapHeight = ledRows;
-  const bToRemove = mapWidth; // same as map width
+  const RES_X = ledColumns * GRID_SIZE;
+  const RES_Y = ledRows * GRID_SIZE;
+  const MAP_WIDTH = ledColumns;
+  const MAP_HEIGHT = ledRows;
+  const BLOCKS_PER_ROW = MAP_WIDTH; // same as map width
   let map = [];
 
   //Data Variables
@@ -35,7 +35,7 @@ const quantumTetris = (p) => {
   let generatedBinaries = [];
 
   // Game Setup
-  const numberOfBlocks = 150;
+  const NUMBER_OF_BLOCKS = 150;
   let rowChecker = 0;
 
   let tetrominoes = [];
@@ -45,25 +45,26 @@ const quantumTetris = (p) => {
   let secondsSinceStart = 0; // Seconds since pressing spacebar
   let secondCounter = 0;
   let pushDownTimer = 0;
+  const DISSOLVE_TIME = 200;
 
-  const initialPushDownDelay = 800; // Time between automatic pushdown of the falling piece
-  let pushDownDelay = initialPushDownDelay;
+  const INITIAL_PUSH_DOWN_DELAY = 800; // Time between automatic pushdown of the falling piece
+  let pushDownDelay = INITIAL_PUSH_DOWN_DELAY;
   // how much faster the game gets after a successful line
-  const gameSpeedIncrement = 80;
+  const GAME_SPEED_INCREMENT = 80;
   let gameOver = false;
   let isPause = false;
 
   // get variables
-  const css = getComputedStyle(document.body);
+  const CSS = getComputedStyle(document.body);
 
   //Colours
-  let bg = p.color(css.getPropertyValue("--color-tetris-bg")); //Background colour
-  let blockColour = p.color(css.getPropertyValue("--color-tetris-block")); //Colour of tetris block
+  let bg = p.color(CSS.getPropertyValue("--color-tetris-bg")); //Background colour
+  let blockColour = p.color(CSS.getPropertyValue("--color-tetris-block")); //Colour of tetris block
   let noiseBlockColour = p.color(
-    css.getPropertyValue("--color-tetris-noiseBlock")
+    CSS.getPropertyValue("--color-tetris-noiseBlock")
   ); //Colour of 'noisy' tetris block
-  let gridColor = p.color(css.getPropertyValue("--color-tetris-grid"));
-  let removeColor = p.color(css.getPropertyValue("--color-tetris-remove"));
+  let gridColor = p.color(CSS.getPropertyValue("--color-tetris-grid"));
+  let removeColor = p.color(CSS.getPropertyValue("--color-tetris-remove"));
 
   let blocksToRemove = [];
   let blockDissolveTimer = 0;
@@ -71,32 +72,32 @@ const quantumTetris = (p) => {
 
   // piece variables
   let currPieceType = 0;
-  let currPieceX = mapWidth / 2;
+  let currPieceX = MAP_WIDTH / 2;
   let currPieceY = -1;
   let rotationState = 0;
 
   const ledShapeMultiplier = 2;
   const ledSize =
-    (tileSize - spacer * (ledShapeMultiplier - 1)) / ledShapeMultiplier;
+    (TILE_SIZE - SPACER * (ledShapeMultiplier - 1)) / ledShapeMultiplier;
 
-  // const tileSize = 22;
-  //   const spacer = 3;
-  //   const gridSize = tileSize + spacer;
+  // const TILE_SIZE = 22;
+  //   const SPACER = 3;
+  //   const GRID_SIZE = TILE_SIZE + SPACER;
 
-  console.log(tileSize, ledSize);
+  console.log(TILE_SIZE, ledSize);
 
   const ledShape = (color) => {
     p.push();
 
-    p.translate(-tileSize / 2, -tileSize / 2);
+    p.translate(-TILE_SIZE / 2, -TILE_SIZE / 2);
 
     p.fill(color);
-    // p.circle(0, 0, tileSize)
+    // p.circle(0, 0, TILE_SIZE)
     for (let x = 0; x < ledShapeMultiplier; x++) {
       for (let y = 0; y < ledShapeMultiplier; y++) {
         p.rect(
-          x * (ledSize + spacer),
-          y * (ledSize + spacer),
+          x * (ledSize + SPACER),
+          y * (ledSize + SPACER),
           ledSize,
           ledSize
         );
@@ -111,7 +112,7 @@ const quantumTetris = (p) => {
   };
 
   p.setup = () => {
-    canvasDOM = p.createCanvas(resX, resY);
+    canvasDOM = p.createCanvas(RES_X, RES_Y);
 
     generatedBinaries = JSON_file["blocks"];
 
@@ -186,7 +187,7 @@ const quantumTetris = (p) => {
     gameOver = false;
     secondsSinceStart = 0;
     secondCounter = p.millis();
-    pushDownDelay = initialPushDownDelay;
+    pushDownDelay = INITIAL_PUSH_DOWN_DELAY;
     tempVal = 0;
   };
 
@@ -220,14 +221,14 @@ const quantumTetris = (p) => {
   };
 
   const checkForRows = () => {
-    for (let y = 0; y < mapHeight; y++) {
+    for (let y = 0; y < MAP_HEIGHT; y++) {
       let piecesInRow = 0;
-      for (let x = 0; x < mapWidth; x++) {
-        if (map[y * mapWidth + x] != 0) piecesInRow++;
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (map[y * MAP_WIDTH + x] != 0) piecesInRow++;
       }
-      if (piecesInRow == bToRemove) {
-        for (let i = 0; i < mapWidth; i++) {
-          blocksToRemove.push(y * mapWidth + i);
+      if (piecesInRow == BLOCKS_PER_ROW) {
+        for (let i = 0; i < MAP_WIDTH; i++) {
+          blocksToRemove.push(y * MAP_WIDTH + i);
           blockDissolveTimer = p.millis();
         }
       }
@@ -235,38 +236,50 @@ const quantumTetris = (p) => {
   };
 
   const dissolveBlocks = () => {
-    let dissolveTime = 200;
-    if (p.millis() - blockDissolveTimer > dissolveTime) {
-      // get rows that need to be removed
-      let rowToCatchUpTo = blocksToRemove[blocksToRemove.length - 1] / mapWidth;
-      let numberOfRows = blocksToRemove.length / mapWidth;
+    if (p.millis() - blockDissolveTimer > DISSOLVE_TIME) {
+      const rowsToRemoveIndexArray = [];
 
-      // score and speed
-      score += numberOfRows * pushDownDelay;
-      completedRows += numberOfRows;
-      // console.log( "Total Rows:",completedRows )
-
-      // remove lines
-      // for( let i = 0; i < blocksToRemove.length; i++ ){
-      //   map[ blocksToRemove[i] ] = 0
-      // }
-
-      // push rows down
-      for (let i = 0; i < numberOfRows; i++) {
-        for (let r = rowToCatchUpTo; r > 0; r--) {
-          // push each row from bottom
-          for (let c = 0; c < mapWidth; c++) {
-            let valueAbove = map[(r - 1) * mapWidth + c];
-            if (!valueAbove && valueAbove !== 0) {
-              valueAbove = 0;
-            }
-
-            map[r * mapWidth + c] = valueAbove;
-          }
-        }
+      for (let i = 0; i < blocksToRemove.length / BLOCKS_PER_ROW; i++) {
+        rowsToRemoveIndexArray.push(
+          (blocksToRemove[BLOCKS_PER_ROW * i] + 0) / MAP_WIDTH
+        );
       }
 
-      fixMap();
+      const lastRowIndex =
+        rowsToRemoveIndexArray[rowsToRemoveIndexArray.length - 1];
+
+      // count how many rows need to be pushed
+      let numRowsToDisplace = rowsToRemoveIndexArray.length;
+
+      // update score and speed
+      score += numRowsToDisplace * pushDownDelay;
+
+      // start at the last row that needs to be deleted and go upwards from there and move each line downwards
+      for (let y = lastRowIndex; y >= 0; y--) {
+        // check if row should be deleted
+        let needsToBeDeleted = false;
+
+        // if row is part of the ones to be removed,
+        // count count up and set delete to true
+        if (rowsToRemoveIndexArray.find((i) => i === y)) {
+          // numRowsToDisplace++;
+          needsToBeDeleted = true;
+        }
+
+        // then go through each cell of the row
+        for (let x = 0; x < MAP_WIDTH; x++) {
+          const cellIndex = y * MAP_WIDTH + x;
+          const shift = numRowsToDisplace * MAP_WIDTH;
+
+          // if does not need to be deleted
+          if (!needsToBeDeleted) {
+            map[cellIndex + shift] = map[cellIndex];
+          }
+
+          // delete current position
+          map[cellIndex] = 0;
+        }
+      }
 
       blocksToRemove = [];
       updateGameSpeed();
@@ -280,7 +293,7 @@ const quantumTetris = (p) => {
       for (let x = 0; x < 4; x++) {
         let pieceIndex = rotatef(x, y, rotationState);
         if (tetrominoes[currPieceType].charAt(pieceIndex) == "1") {
-          let mapIndex = (currPieceY + y) * mapWidth + (currPieceX + x);
+          let mapIndex = (currPieceY + y) * MAP_WIDTH + (currPieceX + x);
           if (mapIndex >= 0) {
             map[mapIndex] = currPieceType + 2;
             if (noiseChecker(tetrominoes[currPieceType])) {
@@ -308,7 +321,7 @@ const quantumTetris = (p) => {
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
         let pieceIndex = rotatef(x, y, rotation);
-        let mapIndex = (movingToY + y) * mapWidth + (movingToX + x);
+        let mapIndex = (movingToY + y) * MAP_WIDTH + (movingToX + x);
 
         // only do calculations if there is acutally a piece at this pixel
         if (tetrominoes[currPieceType].charAt(pieceIndex) == "1") {
@@ -316,16 +329,16 @@ const quantumTetris = (p) => {
             return false;
           }
 
-          if (movingToX + x < 0 || movingToX + x > mapWidth - 1) {
+          if (movingToX + x < 0 || movingToX + x > MAP_WIDTH - 1) {
             return false;
           }
 
-          if (movingToX + x >= 0 && movingToX + x < mapWidth) {
-            if (movingToY + y >= 0 && movingToY + y <= mapHeight) {
-              if (map[mapIndex] !== 0 && mapIndex > mapWidth) {
+          if (movingToX + x >= 0 && movingToX + x < MAP_WIDTH) {
+            if (movingToY + y >= 0 && movingToY + y <= MAP_HEIGHT) {
+              if (map[mapIndex] !== 0 && mapIndex > MAP_WIDTH) {
                 return false;
               }
-            } else if (movingToY + y > mapHeight) {
+            } else if (movingToY + y > MAP_HEIGHT) {
               return false;
             }
           }
@@ -357,7 +370,7 @@ const quantumTetris = (p) => {
       pushDownDelay > 100 &&
       completedRows % rowsNeededToIncreaseGameSpeed == 0
     ) {
-      pushDownDelay -= gameSpeedIncrement;
+      pushDownDelay -= GAME_SPEED_INCREMENT;
       console.log("increased game speed 🏃", pushDownDelay);
     }
   };
@@ -385,8 +398,8 @@ const quantumTetris = (p) => {
     tetrominoes = [];
     let dial = 0;
 
-    for (let i = 0; i < numberOfBlocks; i++) {
-      const random = p.int(p.random(numberOfBlocks));
+    for (let i = 0; i < NUMBER_OF_BLOCKS; i++) {
+      const random = p.int(p.random(NUMBER_OF_BLOCKS));
       const regRand = p.int(p.random(reg.length - 1));
       const noiseRand = p.int(p.random(noise.length - 1));
 
@@ -403,18 +416,18 @@ const quantumTetris = (p) => {
 
   const addBlocks = (add) => {
     for (let i = 0; i < add; i++) {
-      let random = p.int(p.random(numberOfBlocks));
+      let random = p.int(p.random(NUMBER_OF_BLOCKS));
       tetrominoes.push(noiseBlocks[random]);
     }
   };
 
   const createMap = () => {
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
-        if (x == 0 || x == mapWidth - 1 || y == mapHeight - 1) {
-          map[y * mapWidth + x] = 1;
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (x == 0 || x == MAP_WIDTH - 1 || y == MAP_HEIGHT - 1) {
+          map[y * MAP_WIDTH + x] = 1;
         }
-        map[y * mapWidth + x] = 0;
+        map[y * MAP_WIDTH + x] = 0;
       }
     }
   };
@@ -432,12 +445,12 @@ const quantumTetris = (p) => {
 
   const drawForeground = () => {
     p.push();
-    p.translate(gridSize / 2, gridSize / 2);
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
+    p.translate(GRID_SIZE / 2, GRID_SIZE / 2);
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
         let fillColor = gridColor;
 
-        switch (map[y * mapWidth + x]) {
+        switch (map[y * MAP_WIDTH + x]) {
           // regular LED
           case 1:
             fillColor = blockColour;
@@ -455,17 +468,17 @@ const quantumTetris = (p) => {
         // highlight the blocks that get removed
         if (blocksToRemove.length > 0) {
           // console.log(blocksToRemove)
-          if (blocksToRemove.includes(y * mapWidth + x)) {
+          if (blocksToRemove.includes(y * MAP_WIDTH + x)) {
             fillColor = removeColor;
           }
         }
 
         ledShape(fillColor);
 
-        p.translate(gridSize, 0);
+        p.translate(GRID_SIZE, 0);
       }
-      p.translate(0, gridSize);
-      p.translate(-1 * gridSize * mapWidth, 0);
+      p.translate(0, GRID_SIZE);
+      p.translate(-1 * GRID_SIZE * MAP_WIDTH, 0);
     }
     p.pop();
   };
@@ -474,16 +487,16 @@ const quantumTetris = (p) => {
   const drawGameOverScreen = () => {
     p.push();
 
-    p.translate(gridSize / 2, gridSize / 2);
-    for (let y = 0; y < mapHeight; y++) {
-      for (let x = 0; x < mapWidth; x++) {
-        if (map[y * mapWidth + x] == 0) {
+    p.translate(GRID_SIZE / 2, GRID_SIZE / 2);
+    for (let y = 0; y < MAP_HEIGHT; y++) {
+      for (let x = 0; x < MAP_WIDTH; x++) {
+        if (map[y * MAP_WIDTH + x] == 0) {
           ledShape(blockColour);
         }
-        p.translate(gridSize, 0);
+        p.translate(GRID_SIZE, 0);
       }
-      p.translate(0, gridSize);
-      p.translate(-(gridSize * mapWidth), 0);
+      p.translate(0, GRID_SIZE);
+      p.translate(-(GRID_SIZE * MAP_WIDTH), 0);
     }
     p.pop();
   };
@@ -494,8 +507,8 @@ const quantumTetris = (p) => {
   const drawFallingPiece = () => {
     p.push();
 
-    p.translate(gridSize / 2, gridSize / 2);
-    p.translate(gridSize * currPieceX, gridSize * currPieceY);
+    p.translate(GRID_SIZE / 2, GRID_SIZE / 2);
+    p.translate(GRID_SIZE * currPieceX, GRID_SIZE * currPieceY);
 
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 4; x++) {
@@ -508,10 +521,10 @@ const quantumTetris = (p) => {
           }
           ledShape(ledFill);
         }
-        p.translate(gridSize, 0);
+        p.translate(GRID_SIZE, 0);
       }
-      p.translate(0, gridSize);
-      p.translate(-(gridSize * 4), 0);
+      p.translate(0, GRID_SIZE);
+      p.translate(-(GRID_SIZE * 4), 0);
     }
     p.pop();
   };
@@ -519,8 +532,8 @@ const quantumTetris = (p) => {
   const getNewPiece = () => {
     rowChecker++;
 
-    if (rowChecker == numberOfBlocks) {
-      addBlocks(numberOfBlocks);
+    if (rowChecker == NUMBER_OF_BLOCKS) {
+      addBlocks(NUMBER_OF_BLOCKS);
     }
 
     currPieceType = rowChecker;
@@ -534,7 +547,7 @@ const quantumTetris = (p) => {
     while (!fitsInX) {
       //random horizontal distribution
       currPieceX = p.int(
-        p.map(p.random(mapWidth), 0, mapWidth, -2, mapWidth - 2)
+        p.map(p.random(MAP_WIDTH), 0, MAP_WIDTH, -2, MAP_WIDTH - 2)
       );
 
       if (checkIfPieceFits(currPieceX, -4, rotationState)) {
