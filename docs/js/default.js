@@ -87,24 +87,25 @@ const initSliders = () => {
   });
 };
 
-const positionFootnotes = () => {
+const generateFootNotes = () => {
   let footrNoteNum = 0;
-  const startOfArticle = 0;
 
   document.querySelectorAll("section").forEach((s) => {
     const footnotesIndicators = s.querySelectorAll(".footnoteLabel");
     const marginalColumn = s.querySelector(".infoCol");
 
+    const startOfArticle = s.getBoundingClientRect().top;
+
+    let footnotesGenerated = false;
+
     if (marginalColumn) {
       const footnotes = marginalColumn.querySelectorAll("li");
-      let footnotesGenerated = false;
 
       let lastBottom = 0;
       footnotesIndicators.forEach((fn, i) => {
         const reference = footnotes[i];
-        let topOfLink =
-          fn.getBoundingClientRect().top - s.getBoundingClientRect().top;
 
+        // generate footnotes
         if (!footnotesGenerated) {
           footrNoteNum++;
           // const dataFor = fn.getAttribute("data-for");
@@ -141,15 +142,39 @@ const positionFootnotes = () => {
             reference.classList.remove("isHovering");
           });
         }
+      });
+    }
+    footnotesGenerated = true;
+  });
+
+  positionFootnotes();
+};
+
+const positionFootnotes = () => {
+  document.querySelectorAll("section").forEach((s) => {
+    const marginalColumn = s.querySelector(".infoCol");
+
+    if (marginalColumn) {
+      let lastBottom = 0;
+
+      const startOfArticle = s.getBoundingClientRect().top;
+
+      const footnotes = marginalColumn.querySelectorAll("li");
+      const footnotesIndicators = s.querySelectorAll(".footnoteLabel");
+
+      footnotesIndicators.forEach((fn, i) => {
+        const reference = footnotes[i];
+
+        let topOfLink = fn.getBoundingClientRect().top - startOfArticle;
         if (topOfLink <= lastBottom) {
           topOfLink = lastBottom;
         }
         reference.style.top = topOfLink + "px";
+
         // save last bottom in case of overlap
-        lastBottom = topOfLink + fn.getBoundingClientRect().height;
+        lastBottom = topOfLink + reference.getBoundingClientRect().height;
       });
     }
-    footnotesGenerated = true;
   });
 };
 
@@ -157,15 +182,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // start the p5 sketch
   new p5(quantumTetris, "tetris-game-wrapper");
 
-  positionFootnotes();
+  generateFootNotes();
   initSliders();
+
+  setTimeout(positionFootnotes, 300);
 
   document.querySelector("#toggleGrid").addEventListener("click", () => {
     document.querySelector("#gridDisplay").classList.toggle("show");
   });
 });
 
-// window.addEventListener("resize", positionFootnotes);
+window.addEventListener("resize", positionFootnotes);
 
 window.addEventListener("scroll", (e) => {
   windowTop = window.pageYOffset;

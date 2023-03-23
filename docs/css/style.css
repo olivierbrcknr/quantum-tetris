@@ -98,6 +98,7 @@ code {
   max-width: 320px;
   line-height: calc(var(--line-height) * 0.66);
   letter-spacing: 0.03em;
+  position: absolute;
 }
 .footnote.isHovering {
   color: var(--color-font-bright);
@@ -202,6 +203,7 @@ footer ul li {
   }
 
   .footnote {
+    position: relative;
     padding-left: 3em;
     top: initial !important;
     max-width: initial;
